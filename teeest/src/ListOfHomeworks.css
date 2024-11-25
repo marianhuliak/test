@@ -1,0 +1,185 @@
+.list-of-homeworks {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  box-sizing: border-box;
+  height: 72px;
+  display: flex;
+  justify-content: space-between;
+  background-color: white;
+  padding: 16px;
+}
+
+.header-logo {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.header-logo-img {
+  width: 40px;
+  height: 40px;
+}
+
+.header-logo-text {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: left;
+}
+
+.header-login {
+  display: flex;
+  align-items: center;
+}
+
+.content {
+  padding: 16px;
+  background-color: #e9eeef;
+  height: 100vh;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.container {
+  background-color: white;
+  justify-content: space-between;
+  height: auto;
+
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.content-top {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.content-container {
+}
+
+.content-top-add-button {
+  box-sizing: border-box;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.03em;
+  color: #004b52;
+  text-align: center;
+  text-underline-position: from-font;
+  background-color: white;
+  width: 134px;
+  height: 36px;
+  margin-top: 2px;
+  outline: none;
+  border: 1px solid #e9eeef;
+  border-radius: 8px;
+}
+
+.content-top-search-input {
+  box-sizing: border-box;
+  width: 320px;
+  height: 40px;
+  border-radius: 8px;
+  padding: 10px 16px 10px 0;
+  outline: none;
+  border: 1px solid #e9eeef;
+}
+
+.content-top-search-input::placeholder {
+  background-image: url("./img/magnifying-glass.svg");
+  background-repeat: no-repeat;
+  background-position: 17.67px center;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  padding-left: 44px;
+}
+
+.content-pagination {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.content-pagination-info {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #004b52;
+  opacity: 0.46;
+}
+
+.content-pagination-button {
+  width: 40px;
+}
+
+.homeworks-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.homeworks-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin-top: 8px;
+  overflow-x: hidden;
+}
+
+.homeworks-table th,
+.homeworks-table td {
+  padding: 8px;
+  text-align: left;
+  word-wrap: break-word;
+}
+
+.table-text {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  opacity: 0.46;
+  text-align: left;
+  text-decoration-skip-ink: none;
+  color: #004b52;
+}
+
+
+.homeworks-table-line {
+    width: 100vw; 
+    height: 1px; 
+    background-color: #004B52; 
+    opacity: 0.16;
+    margin: 10px 0; 
+  }
+  
+  
+
+
+
+
+
+
+
+  .homeworks-table tr {
+    border-top: 1px solid #004B52; 
+  }
+
+  .homeworks-table tr:first-child {
+    border-top: none; /* Забираємо лінію для першого рядка */
+  }
+  
+  .homeworks-table th, .homeworks-table td {
+    padding: 12px 0 12px 0;  
+  }
+  
