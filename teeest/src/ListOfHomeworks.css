@@ -144,7 +144,7 @@
   word-wrap: break-word;
 }
 
-.table-text {
+#table-text {
   font-size: 12px;
   font-weight: 700;
   line-height: 16px;
@@ -154,32 +154,38 @@
   color: #004b52;
 }
 
-
 .homeworks-table-line {
-    width: 100vw; 
-    height: 1px; 
-    background-color: #004B52; 
-    opacity: 0.16;
-    margin: 10px 0; 
+  width: 100vw;
+  height: 1px;
+  background-color: #004b52;
+  opacity: 0.16;
+  margin: 10px 0;
+}
+
+.homeworks-table tr {
+  border-top: 1px solid rgba(0, 75, 82, 0.16);
+}
+
+.homeworks-table tr:first-child {
+  border-top: none; /* Забираємо лінію для першого рядка */
+}
+
+.homeworks-table th,
+.homeworks-table td {
+  padding: 12px 0 12px 0;
+}
+
+.homeworks-table {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #004b52;
+}
+
+
+.content-pagination-button:active {
+    opacity: 0.4; /* Зменшення прозорості при натисканні */
   }
-  
-  
-
-
-
-
-
-
-
-  .homeworks-table tr {
-    border-top: 1px solid #004B52; 
-  }
-
-  .homeworks-table tr:first-child {
-    border-top: none; /* Забираємо лінію для першого рядка */
-  }
-  
-  .homeworks-table th, .homeworks-table td {
-    padding: 12px 0 12px 0;  
-  }
-  
