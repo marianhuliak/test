@@ -186,7 +186,10 @@
 .status-draft,
 .status-published,
 .status-reviewed,
-.status-pending-review {
+.status-pending-review,
+.rate-completion-low,
+.rate-completion-middle,
+.rate-completion-high {
   border: none;
   width: auto;
   height: 24px;
@@ -218,36 +221,14 @@
   background-color: #d9e1e3;
 }
 
-.rate-completion-low,
-.rate-completion-middle,
-.rate-completion-high {
-  border: none;
-  width: auto;
-  height: 24px;
-  padding: 4px 8px 4px 8px;
-  gap: 4px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 16px;
-  text-align: center;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
-  color: #004b52;
-}
-
 .rate-completion-low {
   background-color: #d9e1e3;
-
 }
 
 .rate-completion-middle {
-  background-color: #FCF196;
-  
-
+  background-color: #fcf196;
 }
 
 .rate-completion-high {
-  background-color: #B7E885;
-
+  background-color: #b7e885;
 }

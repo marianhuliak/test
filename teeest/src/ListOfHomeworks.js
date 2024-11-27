@@ -25,12 +25,12 @@ const ListOfHomeworks = () => {
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
   const handleFilterClick = (e, columnName) => {
-    const rect = e.target.getBoundingClientRect(); // Отримуємо координати елемента
+    const rect = e.target.getBoundingClientRect(); 
     setPopupPosition({
-      top: rect.bottom + window.scrollY, // Нижня межа елемента + відступ прокрутки
-      left: rect.left + window.scrollX, // Ліва межа елемента + відступ прокрутки
+      top: rect.bottom + window.scrollY, 
+      left: rect.left + window.scrollX, 
     });
-    setPopupVisible(true); // Відкриваємо попап
+    setPopupVisible(true); 
   };
 
   const fetchHomeworks = async () => {
@@ -64,10 +64,8 @@ const ListOfHomeworks = () => {
   }, []);
 
   const filteredHomeworks = homeworks.filter((hw) => {
-    const searchLower = searchTerm.toLowerCase(); // Зробили пошук нечутливим до регістру
-    // Перевірка по заголовку:
+    const searchLower = searchTerm.toLowerCase();
     const matchesTitle = hw.title.toLowerCase().includes(searchLower);
-    // Перевірка по даті, якщо введено мінімум 3 символи:
     const matchesDate =
       searchLower.length >= 3 &&
       (formatDate(hw.createdAt).toLowerCase().includes(searchLower) ||

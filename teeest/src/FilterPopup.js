@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-
 import "./FilterPopup.css";
-
 
 const FilterPopup = ({ position, onClose }) => {
   const [searchTerm, setSearchTerm] = useState("");
