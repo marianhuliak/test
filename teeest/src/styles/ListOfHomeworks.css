@@ -94,7 +94,7 @@
 }
 
 .content-top-search-input::placeholder {
-  background-image: url("./img/magnifying-glass.svg");
+  background-image: url("../img/magnifying-glass.svg");
   background-repeat: no-repeat;
   background-position: left;
 

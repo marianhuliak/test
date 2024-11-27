@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 
-import ListOfHomeworks from './ListOfHomeworks';
+import ListOfHomeworks from './components/ListOfHomeworks';
 
 function App() {
   return (

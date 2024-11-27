@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-import FilterPopup from "./FilterPopup";
+import FilterPopup from "./FilterPopup.js";
 
-import logo from "./img/Logo.svg";
-import buttonRight from "./img/list-of-homeworks-button-right.svg";
-import buttonLeft from "./img/list-of-homeworks-button-left.svg";
-import lockIcon from "./img/lock-icon.svg";
-import "./ListOfHomeworks.css";
-import "./FilterPopup.css";
+import logo from "../img/Logo.svg";
+import buttonRight from "../img/list-of-homeworks-button-right.svg";
+import buttonLeft from "../img/list-of-homeworks-button-left.svg";
+import lockIcon from "../img/lock-icon.svg";
+import "../img/Logo.svg";
+import "../styles/FilterPopup.css";
+import "../styles/ListOfHomeworks.css";
 
 const API_BASE_URL =
   "http://127.0.0.1:5001/aylee-learns-english-dev/us-central1/api/api";

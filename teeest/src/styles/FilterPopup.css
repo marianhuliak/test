@@ -9,7 +9,7 @@
 }
 
 .popup-search-input::placeholder {
-  background-image: url("./img/magnifying-glass.svg");
+  background-image: url("../img/magnifying-glass.svg");
   background-repeat: no-repeat;
   background-position: 17.67px left;
   background-size: 16px 16px;
@@ -70,7 +70,7 @@
 }
 
 .checkbox:checked + .checkmark::before {
-  content: url("./img/checkmark.svg");
+  content: url("../img/checkmark.svg");
   position: absolute;
   top: 10%;
   left: 50%;
