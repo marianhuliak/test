@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-
 import FilterPopup from "./FilterPopup.js";
 
 import logo from "../img/Logo.svg";
@@ -14,7 +13,6 @@ import "../styles/ListOfHomeworks.css";
 const API_BASE_URL =
   "http://127.0.0.1:5001/aylee-learns-english-dev/us-central1/api/api";
 
-
 const ListOfHomeworks = () => {
   const [homeworks, setHomeworks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,13 +23,18 @@ const ListOfHomeworks = () => {
 
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
+
+  const [sortOrder, setSortOrder] = useState(""); //
+  const [sortedColumn, setSortedColumn] = useState(""); //
+
   const handleFilterClick = (e, columnName) => {
-    const rect = e.target.getBoundingClientRect(); 
+    const rect = e.target.getBoundingClientRect();
     setPopupPosition({
-      top: rect.bottom + window.scrollY, 
-      left: rect.left + window.scrollX, 
+      top: rect.bottom + window.scrollY,
+      left: rect.left + window.scrollX,
     });
-    setPopupVisible(true); 
+    setPopupVisible(true);
+    setSortedColumn(columnName);//
   };
 
   const fetchHomeworks = async () => {
@@ -48,6 +51,10 @@ const ListOfHomeworks = () => {
     }
   };
 
+  useEffect(() => {
+    fetchHomeworks();
+  }, []);
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleString("en-US", {
@@ -60,10 +67,6 @@ const ListOfHomeworks = () => {
     });
   };
 
-  useEffect(() => {
-    fetchHomeworks();
-  }, []);
-
   const filteredHomeworks = homeworks.filter((hw) => {
     const searchLower = searchTerm.toLowerCase();
     const matchesTitle = hw.title.toLowerCase().includes(searchLower);
@@ -74,13 +77,41 @@ const ListOfHomeworks = () => {
     return matchesTitle || matchesDate;
   });
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = filteredHomeworks.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
+ const sortHomeworks = (homeworks) => {
+  if (sortedColumn && sortOrder) {
+    return [...homeworks].sort((a, b) => {
+      let valueA = a[sortedColumn];
+      let valueB = b[sortedColumn];
 
-  // Обробка кнопок пагінації
+      if (valueA instanceof Date || valueB instanceof Date || !isNaN(Date.parse(valueA)) || !isNaN(Date.parse(valueB))) {
+        valueA = new Date(valueA);
+        valueB = new Date(valueB);
+      }
+
+      if (!isNaN(valueA) && !isNaN(valueB)) {
+        valueA = Number(valueA);
+        valueB = Number(valueB);
+      }
+
+      if (typeof valueA === "string" && typeof valueB === "string") {
+        valueA = valueA.toLowerCase();
+        valueB = valueB.toLowerCase();
+      }
+
+      if (valueA < valueB) return sortOrder === "asc" ? -1 : 1;
+      if (valueA > valueB) return sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+  }
+  return homeworks;
+};
+
+
+  const sortedHomeworks = sortHomeworks(filteredHomeworks);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentItems = sortedHomeworks.slice(startIndex, startIndex + itemsPerPage);
+
   const handleNextPage = () => {
     if (startIndex + itemsPerPage < filteredHomeworks.length) {
       setCurrentPage(currentPage + 1);
@@ -174,21 +205,21 @@ const ListOfHomeworks = () => {
                       <img
                         src={lockIcon}
                         className={"lock-icon"}
-                        alt="lolockIcongo"
+                        alt="lockIcon"
                         style={{ width: "9px" }}
                       />
                     </th>
                     <th
                       id="table-text"
-                      onClick={(e) => handleFilterClick(e, "dueDate")}
+                      onClick={(e) => handleFilterClick(e, "type")}
                     >
                       Homework Type
                     </th>
                     <th
                       id="table-text"
-                      onClick={(e) => handleFilterClick(e, "dueDate")}
+                      onClick={(e) => handleFilterClick(e, "rate")}
                     >
-                      Complation Rate
+                      Completion Rate
                     </th>
                   </tr>
                 </thead>
@@ -233,6 +264,11 @@ const ListOfHomeworks = () => {
               <FilterPopup
                 position={popupPosition}
                 onClose={() => setPopupVisible(false)}
+                onSortChange={(order) => {
+                  setSortOrder(order);
+                  setPopupVisible(false);
+                }}
+                sortedColumn={sortedColumn}
               />
             )}
           </div>

@@ -2,21 +2,29 @@ import React, { useState, useEffect, useRef } from "react";
 
 import "../styles/FilterPopup.css";
 
-const FilterPopup = ({ position, onClose }) => {
+
+const FilterPopup = ({ position, onClose, onSortChange, sortedColumn }) => {
+
   const [searchTerm, setSearchTerm] = useState("");
-  const popupRef = useRef(null);
+    const popupRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (popupRef.current && !popupRef.current.contains(event.target)) {
-        onClose(); // Викликаємо onClose, якщо клік був поза попапом
+        onClose();
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onClose]);
+
+  const handleSort = (order) => {
+    onSortChange(order);
+    onClose();
+  };
 
   return (
     <div
@@ -30,10 +38,10 @@ const FilterPopup = ({ position, onClose }) => {
         zIndex: 10,
       }}
     >
-      <p className="filter-popup-button" onClick={onClose}>
+       <p className="filter-popup-button" onClick={() => handleSort("asc")}>
         Sort A to Z
       </p>
-      <p className="filter-popup-button" onClick={onClose}>
+      <p className="filter-popup-button" onClick={() => handleSort("desc")}>
         Sort Z to A
       </p>
       <div className="popup-search">
