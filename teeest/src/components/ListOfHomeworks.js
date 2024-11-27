@@ -6,6 +6,7 @@ import logo from "../img/Logo.svg";
 import buttonRight from "../img/list-of-homeworks-button-right.svg";
 import buttonLeft from "../img/list-of-homeworks-button-left.svg";
 import lockIcon from "../img/lock-icon.svg";
+import filterIcon from "../img/filter-icon.svg";
 import "../img/Logo.svg";
 import "../styles/FilterPopup.css";
 import "../styles/ListOfHomeworks.css";
@@ -34,7 +35,7 @@ const ListOfHomeworks = () => {
       left: rect.left + window.scrollX,
     });
     setPopupVisible(true);
-    setSortedColumn(columnName);//
+    setSortedColumn(columnName); //
   };
 
   const fetchHomeworks = async () => {
@@ -77,40 +78,47 @@ const ListOfHomeworks = () => {
     return matchesTitle || matchesDate;
   });
 
- const sortHomeworks = (homeworks) => {
-  if (sortedColumn && sortOrder) {
-    return [...homeworks].sort((a, b) => {
-      let valueA = a[sortedColumn];
-      let valueB = b[sortedColumn];
+  const sortHomeworks = (homeworks) => {
+    if (sortedColumn && sortOrder) {
+      return [...homeworks].sort((a, b) => {
+        let valueA = a[sortedColumn];
+        let valueB = b[sortedColumn];
 
-      if (valueA instanceof Date || valueB instanceof Date || !isNaN(Date.parse(valueA)) || !isNaN(Date.parse(valueB))) {
-        valueA = new Date(valueA);
-        valueB = new Date(valueB);
-      }
+        if (
+          valueA instanceof Date ||
+          valueB instanceof Date ||
+          !isNaN(Date.parse(valueA)) ||
+          !isNaN(Date.parse(valueB))
+        ) {
+          valueA = new Date(valueA);
+          valueB = new Date(valueB);
+        }
 
-      if (!isNaN(valueA) && !isNaN(valueB)) {
-        valueA = Number(valueA);
-        valueB = Number(valueB);
-      }
+        if (!isNaN(valueA) && !isNaN(valueB)) {
+          valueA = Number(valueA);
+          valueB = Number(valueB);
+        }
 
-      if (typeof valueA === "string" && typeof valueB === "string") {
-        valueA = valueA.toLowerCase();
-        valueB = valueB.toLowerCase();
-      }
+        if (typeof valueA === "string" && typeof valueB === "string") {
+          valueA = valueA.toLowerCase();
+          valueB = valueB.toLowerCase();
+        }
 
-      if (valueA < valueB) return sortOrder === "asc" ? -1 : 1;
-      if (valueA > valueB) return sortOrder === "asc" ? 1 : -1;
-      return 0;
-    });
-  }
-  return homeworks;
-};
-
+        if (valueA < valueB) return sortOrder === "asc" ? -1 : 1;
+        if (valueA > valueB) return sortOrder === "asc" ? 1 : -1;
+        return 0;
+      });
+    }
+    return homeworks;
+  };
 
   const sortedHomeworks = sortHomeworks(filteredHomeworks);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = sortedHomeworks.slice(startIndex, startIndex + itemsPerPage);
+  const currentItems = sortedHomeworks.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
   const handleNextPage = () => {
     if (startIndex + itemsPerPage < filteredHomeworks.length) {
@@ -186,19 +194,40 @@ const ListOfHomeworks = () => {
                       id="table-text"
                       onClick={(e) => handleFilterClick(e, "status")}
                     >
-                      Status
+                      Status{" "}
+                      {sortedColumn === "status" && sortOrder && (
+                        <img
+                          src={filterIcon}
+                          alt="Filter Icon"
+                          className={"filter-icon"}
+                        />
+                      )}
                     </th>
                     <th
                       id="table-text"
                       onClick={(e) => handleFilterClick(e, "createdAt")}
                     >
-                      Available On
+                      Available On{" "}
+                      {sortedColumn === "createdAt" && sortOrder && (
+                        <img
+                          src={filterIcon}
+                          alt="Filter Icon"
+                          className={"filter-icon"}
+                        />
+                      )}
                     </th>
                     <th
                       id="table-text"
                       onClick={(e) => handleFilterClick(e, "dueDate")}
                     >
-                      Due On
+                      Due On{" "}
+                      {sortedColumn === "dueDate" && sortOrder && (
+                        <img
+                          src={filterIcon}
+                          alt="Filter Icon"
+                          className={"filter-icon"}
+                        />
+                      )}
                     </th>
                     <th id="table-text">
                       Class{" "}
@@ -206,20 +235,33 @@ const ListOfHomeworks = () => {
                         src={lockIcon}
                         className={"lock-icon"}
                         alt="lockIcon"
-                        style={{ width: "9px" }}
                       />
                     </th>
                     <th
                       id="table-text"
                       onClick={(e) => handleFilterClick(e, "type")}
                     >
-                      Homework Type
+                      Homework Type{" "}
+                      {sortedColumn === "type" && sortOrder && (
+                        <img
+                          src={filterIcon}
+                          alt="Filter Icon"
+                          className={"filter-icon"}
+                        />
+                      )}
                     </th>
                     <th
                       id="table-text"
                       onClick={(e) => handleFilterClick(e, "rate")}
                     >
-                      Completion Rate
+                      Completion Rate{" "}
+                      {sortedColumn === "rate" && sortOrder && (
+                        <img
+                          src={filterIcon}
+                          alt="Filter Icon"
+                          className={"filter-icon"}
+                        />
+                      )}
                     </th>
                   </tr>
                 </thead>

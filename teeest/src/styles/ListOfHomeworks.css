@@ -232,3 +232,8 @@
 .rate-completion-high {
   background-color: #b7e885;
 }
+
+
+.filter-icon, .lock-icon {
+  width: 9px;
+}
