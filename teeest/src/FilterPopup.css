@@ -1,0 +1,201 @@
+.popup-search-input {
+  box-sizing: border-box;
+  width: 224px;
+  height: 36px;
+  border-radius: 8px;
+  padding: 10px 16px 10px 11.67px;
+  outline: none;
+  border: 1px solid #e9eeef;
+}
+
+.popup-search-input::placeholder {
+  background-image: url("./img/magnifying-glass.svg");
+  background-repeat: no-repeat;
+  background-position: 17.67px left;
+  background-size: 16px 16px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  padding-left: 26.34px;
+}
+
+.popup {
+  width: 240px;
+  height: 408px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 75, 82, 0.16);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  padding: 12px 8px 8px 8px;
+  box-sizing: border-box;
+}
+
+/* Стилі для контейнера */
+.checkbox-container {
+  position: relative;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+}
+
+/* Стилі для самого прапорця (невидимий) */
+.checkbox {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* Стилі для імітації прапорця */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 19px;
+  height: 19px;
+  border: 1px solid rgba(0, 75, 82, 0.16);
+  background-color: transparent;
+  border-radius: 5px;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.checkbox:checked + .checkmark {
+  background-color: rgb(183, 232, 133);
+  border-color: rgb(183, 232, 133);
+}
+
+.checkbox:checked + .checkmark::before {
+  content: url("./img/checkmark.svg");
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  width: 11.35px;
+  height: 8.67px;
+}
+
+.filter-popup-line {
+  margin-left: -8px;
+  width: 240px;
+  height: 1px;
+  background-color: #004b52;
+  opacity: 0.16;
+}
+
+.filter-popup-button {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #004b52;
+  align-items: flex-start;
+  margin: 0 8px 16px 0;
+}
+
+.filter-popup-selection {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #004b52;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 0 8px;
+}
+
+.filter-popup-selection-ALL,
+.filter-popup-selection-NONE {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: 0.05em;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #004b52;
+}
+
+.filter-popup-selection-ALL:active,
+.filter-popup-selection-NONE:active {
+  opacity: 30%;
+}
+
+.filter-popup-selection-container {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.filter-popup-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 12px;
+}
+
+.checkbox-section-container {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.answer-option {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #004b52;
+}
+
+.filter-popup-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.filter-popup-button-discard, .filter-popup-button-apply  {
+  width: 108px;
+  height: 32px;
+  padding: 8px 16px 8px 16px;
+  gap: 4px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 75, 82, 0.16);
+  opacity: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.03em;
+  text-align: center;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+}
+
+.filter-popup-button-discard {
+  background-color: white;
+ 
+}
+
+.filter-popup-button-apply {
+    background-color: #004B52;
+    color: white;
+
+}
