@@ -21,12 +21,23 @@ const ListOfHomeworks = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [uniqueStatuses, setUniqueStatuses] = useState([]);
 
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
 
   const [sortOrder, setSortOrder] = useState(""); //
   const [sortedColumn, setSortedColumn] = useState(""); //
+
+
+  function uniqueColumnValues(data,column) {
+    return [...new Set(data.map(item => item[column]))];
+  }
+
+
+
+
+
 
   const handleFilterClick = (e, columnName) => {
     const rect = e.target.getBoundingClientRect();
@@ -36,6 +47,9 @@ const ListOfHomeworks = () => {
     });
     setPopupVisible(true);
     setSortedColumn(columnName); //
+
+    setUniqueStatuses(uniqueColumnValues(homeworks,columnName));
+  
   };
 
   const fetchHomeworks = async () => {
@@ -313,6 +327,7 @@ const ListOfHomeworks = () => {
                   setPopupVisible(false);
                 }}
                 sortedColumn={sortedColumn}
+                columnValues={uniqueStatuses}
               />
             )}
           </div>

@@ -2,9 +2,24 @@ import React, { useState, useEffect, useRef } from "react";
 
 import "../styles/FilterPopup.css";
 
-const FilterPopup = ({ position, onClose, onSortChange, sortedColumn }) => {
+
+const FilterPopup = ({ position, onClose, onSortChange, columnValues }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const popupRef = useRef(null);
+  const [selectedValues, setSelectedValues] = useState([]);
+  
+  
+
+
+
+  const handleCheckboxChange = (value) => {
+    setSelectedValues((prevSelected) =>
+      prevSelected.includes(value)
+        ? prevSelected.filter((item) => item !== value) // Видалення зі списку
+        : [...prevSelected, value] // Додавання до списку
+    );
+  };
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -64,35 +79,22 @@ const FilterPopup = ({ position, onClose, onSortChange, sortedColumn }) => {
       <div className="filter-popup-line"></div>
 
       <div className="filter-popup-checkboxes">
-        <div className="checkbox-section-container">
+      {columnValues.map((value) => (
+        <div className="checkbox-section-container" key={value}>
           <label className="checkbox-container">
-            <input type="checkbox" className="checkbox" />
+            <input
+              type="checkbox"
+              className="checkbox"
+              value={value}
+              checked={selectedValues.includes(value)}
+              onChange={() => handleCheckboxChange(value)}
+            />
             <span className="checkmark"></span>
           </label>
-          <p className="answer-option">Draft</p>
+          <p className="answer-option">{value}</p>
         </div>
-        <div className="checkbox-section-container">
-          <label className="checkbox-container">
-            <input type="checkbox" className="checkbox" />
-            <span className="checkmark"></span>
-          </label>
-          <p className="answer-option">Published</p>
-        </div>
-        <div className="checkbox-section-container">
-          <label className="checkbox-container">
-            <input type="checkbox" className="checkbox" />
-            <span className="checkmark"></span>
-          </label>
-          <p className="answer-option">Pending review</p>
-        </div>
-        <div className="checkbox-section-container">
-          <label className="checkbox-container">
-            <input type="checkbox" className="checkbox" />
-            <span className="checkmark"></span>
-          </label>
-          <p className="answer-option">Reviewed</p>
-        </div>
-      </div>
+      ))}
+    </div>
 
       <div className="filter-popup-line" style={{ marginTop: "35px" }}></div>
       <div className="filter-popup-actions">
