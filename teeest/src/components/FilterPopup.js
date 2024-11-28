@@ -2,11 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 
 import "../styles/FilterPopup.css";
 
-
 const FilterPopup = ({ position, onClose, onSortChange, sortedColumn }) => {
-
   const [searchTerm, setSearchTerm] = useState("");
-    const popupRef = useRef(null);
+  const popupRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -38,7 +36,7 @@ const FilterPopup = ({ position, onClose, onSortChange, sortedColumn }) => {
         zIndex: 10,
       }}
     >
-       <p className="filter-popup-button" onClick={() => handleSort("asc")}>
+      <p className="filter-popup-button" onClick={() => handleSort("asc")}>
         Sort A to Z
       </p>
       <p className="filter-popup-button" onClick={() => handleSort("desc")}>
@@ -71,28 +69,28 @@ const FilterPopup = ({ position, onClose, onSortChange, sortedColumn }) => {
             <input type="checkbox" className="checkbox" />
             <span className="checkmark"></span>
           </label>
-          <p className="answer-option">On track</p>
+          <p className="answer-option">Draft</p>
         </div>
         <div className="checkbox-section-container">
           <label className="checkbox-container">
             <input type="checkbox" className="checkbox" />
             <span className="checkmark"></span>
           </label>
-          <p className="answer-option">Catching up</p>
+          <p className="answer-option">Published</p>
         </div>
         <div className="checkbox-section-container">
           <label className="checkbox-container">
             <input type="checkbox" className="checkbox" />
             <span className="checkmark"></span>
           </label>
-          <p className="answer-option">Falling behind</p>
+          <p className="answer-option">Pending review</p>
         </div>
         <div className="checkbox-section-container">
           <label className="checkbox-container">
             <input type="checkbox" className="checkbox" />
             <span className="checkmark"></span>
           </label>
-          <p className="answer-option">N/A</p>
+          <p className="answer-option">Reviewed</p>
         </div>
       </div>
 

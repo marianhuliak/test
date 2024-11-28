@@ -1,20 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import FilterPopup from "./FilterPopup.js";
 
 import logo from "../img/Logo.svg";
 import buttonRight from "../img/list-of-homeworks-button-right.svg";
 import buttonLeft from "../img/list-of-homeworks-button-left.svg";
-import lockIcon from "../img/lock-icon.svg";
 import filterIcon from "../img/filter-icon.svg";
+import lockIcon from "../img/lock-icon.svg";
 import "../img/Logo.svg";
 import "../styles/FilterPopup.css";
 import "../styles/ListOfHomeworks.css";
 
+
 const API_BASE_URL =
   "http://127.0.0.1:5001/aylee-learns-english-dev/us-central1/api/api";
 
-const ListOfHomeworks = () => {
+const ListOfActivities = () => {
   const [homeworks, setHomeworks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
@@ -41,7 +41,7 @@ const ListOfHomeworks = () => {
   const fetchHomeworks = async () => {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/homework?homeworkId=all`
+        `${API_BASE_URL}/homework?homeworkIds=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22`
       );
       setHomeworks(response.data.homeworks);
       setLoading(false);
@@ -51,6 +51,10 @@ const ListOfHomeworks = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchHomeworks();
+  }, []);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -66,7 +70,7 @@ const ListOfHomeworks = () => {
 
   const filteredHomeworks = homeworks.filter((hw) => {
     const searchLower = searchTerm.toLowerCase();
-    const matchesTitle = hw.status.toLowerCase().includes(searchLower);
+    const matchesTitle = hw.title.toLowerCase().includes(searchLower);
     const matchesDate =
       searchLower.length >= 3 &&
       (formatDate(hw.createdAt).toLowerCase().includes(searchLower) ||
@@ -128,16 +132,12 @@ const ListOfHomeworks = () => {
     }
   };
 
-  useEffect(() => {
-    fetchHomeworks();
-  }, []);
-
   return (
     <div className="list-of-homeworks">
       <div className="header">
         <div className="header-logo">
           <img src={logo} alt="logo" className="header-logo-img" />
-          <p className="header-logo-text">Homeworks</p>
+          <p className="header-logo-text">Activities</p>
         </div>
         <div className="header-login">log in</div>
       </div>
@@ -151,12 +151,9 @@ const ListOfHomeworks = () => {
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search by title..."
+                  placeholder="Search by primary skill..."
                   className="content-top-search-input"
                 />
-              </div>
-              <div className="content-top-button">
-                <button className="content-top-add-button">ADD HOMEWORK</button>
               </div>
             </div>
 
@@ -180,9 +177,7 @@ const ListOfHomeworks = () => {
               />
             </div>
           </div>
-
-          <div className="homeworks-table-container">
-            {loading ? (
+          {loading ? (
               <p>Loading...</p>
             ) : error ? (
               <p className="error">{error}</p>
@@ -192,10 +187,10 @@ const ListOfHomeworks = () => {
                   <tr>
                     <th
                       id="table-text"
-                      onClick={(e) => handleFilterClick(e, "status")}
+                      onClick={(e) => handleFilterClick(e, "LanguageElementstus")}//
                     >
-                      Status{" "}
-                      {sortedColumn === "status" && sortOrder && (
+                      Language Elements{" "}
+                      {sortedColumn === "LanguageElements" && sortOrder && (//
                         <img
                           src={filterIcon}
                           alt="Filter Icon"
@@ -205,23 +200,10 @@ const ListOfHomeworks = () => {
                     </th>
                     <th
                       id="table-text"
-                      onClick={(e) => handleFilterClick(e, "createdAt")}
+                      onClick={(e) => handleFilterClick(e, "PrimarySkills")}
                     >
-                      Available On{" "}
-                      {sortedColumn === "createdAt" && sortOrder && (
-                        <img
-                          src={filterIcon}
-                          alt="Filter Icon"
-                          className={"filter-icon"}
-                        />
-                      )}
-                    </th>
-                    <th
-                      id="table-text"
-                      onClick={(e) => handleFilterClick(e, "dueOn")}
-                    >
-                      Due On{" "}
-                      {sortedColumn === "dueOn" && sortOrder && (
+                      Primary Skills
+                      {sortedColumn === "PrimarySkills" && sortOrder && (//
                         <img
                           src={filterIcon}
                           alt="Filter Icon"
@@ -239,10 +221,10 @@ const ListOfHomeworks = () => {
                     </th>
                     <th
                       id="table-text"
-                      onClick={(e) => handleFilterClick(e, "type")}
+                      onClick={(e) => handleFilterClick(e, "game")}//
                     >
-                      Homework Type{" "}
-                      {sortedColumn === "type" && sortOrder && (
+                      Game{" "}
+                      {sortedColumn === "game" && sortOrder && (//
                         <img
                           src={filterIcon}
                           alt="Filter Icon"
@@ -252,10 +234,36 @@ const ListOfHomeworks = () => {
                     </th>
                     <th
                       id="table-text"
-                      onClick={(e) => handleFilterClick(e, "completionRate")}
+                      onClick={(e) => handleFilterClick(e, "Time required")}//
                     >
-                      Completion Rate{" "}
-                      {sortedColumn === "completionRate" && sortOrder && (
+                      Time required{" "}
+                      {sortedColumn === "Time required" && sortOrder && (//
+                        <img
+                          src={filterIcon}
+                          alt="Filter Icon"
+                          className={"filter-icon"}
+                        />
+                      )}
+                    </th>
+                    <th
+                      id="table-text"
+                      onClick={(e) => handleFilterClick(e, "Launch Live activities")}//
+                    >
+                      Launch Live activities{" "}
+                      {sortedColumn === "Launch Live activities" && sortOrder && (//
+                        <img
+                          src={filterIcon}
+                          alt="Filter Icon"
+                          className={"filter-icon"}
+                        />
+                      )}
+                    </th>
+                    <th
+                      id="table-text"
+                      onClick={(e) => handleFilterClick(e, "Add to Homework")}//
+                    >
+                      Add to Homework{" "}
+                      {sortedColumn === "Launch Live activities" && sortOrder && (//
                         <img
                           src={filterIcon}
                           alt="Filter Icon"
@@ -279,24 +287,22 @@ const ListOfHomeworks = () => {
                       </td>
 
                       <td>{formatDate(hw.createdAt)}</td>
-                      <td>{formatDate(hw.dueOn)}</td>
-                      <td>{hw.assignedTo}</td>
+                      <td>{formatDate(hw.dueDate)}</td>
+                      <td>{hw.class}</td>
                       <td>{hw.type}</td>
                       <td>
                         <button
                           className={
-                            hw.completionRate >= 0 && hw.completionRate <= 30
+                            hw.rate >= 0 && hw.rate <= 30
                               ? "rate-completion-low"
-                              : hw.completionRate >= 31 &&
-                                hw.completionRate <= 80
+                              : hw.rate >= 31 && hw.rate <= 80
                               ? "rate-completion-middle"
-                              : hw.completionRate >= 81 &&
-                                hw.completionRate <= 100
+                              : hw.rate >= 81 && hw.rate <= 100
                               ? "rate-completion-high"
                               : ""
                           }
                         >
-                          {hw.completionRate}%
+                          {hw.rate}%
                         </button>
                       </td>
                     </tr>
@@ -304,22 +310,12 @@ const ListOfHomeworks = () => {
                 </tbody>
               </table>
             )}
-            {popupVisible && (
-              <FilterPopup
-                position={popupPosition}
-                onClose={() => setPopupVisible(false)}
-                onSortChange={(order) => {
-                  setSortOrder(order);
-                  setPopupVisible(false);
-                }}
-                sortedColumn={sortedColumn}
-              />
-            )}
-          </div>
+
+          
         </div>
       </div>
     </div>
   );
 };
 
-export default ListOfHomeworks;
+export default ListOfActivities;
