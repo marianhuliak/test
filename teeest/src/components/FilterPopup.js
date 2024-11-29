@@ -1,25 +1,23 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, onResetFilters } from "react";
 
-import "../styles/FilterPopup.css";
-
-
-const FilterPopup = ({ position, onClose, onSortChange, columnValues }) => {
+const FilterPopup = ({
+  position,
+  onClose,
+  onSortChange,
+  columnValues,
+  onFilterApply,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const popupRef = useRef(null);
   const [selectedValues, setSelectedValues] = useState([]);
-  
-  
-
-
 
   const handleCheckboxChange = (value) => {
     setSelectedValues((prevSelected) =>
       prevSelected.includes(value)
-        ? prevSelected.filter((item) => item !== value) // Видалення зі списку
-        : [...prevSelected, value] // Додавання до списку
+        ? prevSelected.filter((item) => item !== value)
+        : [...prevSelected, value]
     );
   };
-
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -34,11 +32,6 @@ const FilterPopup = ({ position, onClose, onSortChange, columnValues }) => {
     };
   }, [onClose]);
 
-  const handleSort = (order) => {
-    onSortChange(order);
-    onClose();
-  };
-
   return (
     <div
       ref={popupRef}
@@ -51,10 +44,10 @@ const FilterPopup = ({ position, onClose, onSortChange, columnValues }) => {
         zIndex: 10,
       }}
     >
-      <p className="filter-popup-button" onClick={() => handleSort("asc")}>
+      <p className="filter-popup-button" onClick={() => onSortChange("asc")}>
         Sort A to Z
       </p>
-      <p className="filter-popup-button" onClick={() => handleSort("desc")}>
+      <p className="filter-popup-button" onClick={() => onSortChange("desc")}>
         Sort Z to A
       </p>
       <div className="popup-search">
@@ -66,42 +59,44 @@ const FilterPopup = ({ position, onClose, onSortChange, columnValues }) => {
           className="popup-search-input"
         />
       </div>
-
-      <div className="filter-popup-selection">
-        <p className="filter-popup-selection-selected">7 selected</p>
-        <div className="filter-popup-selection-container">
-          <p className="filter-popup-selection-select">Select:</p>
-          <p className="filter-popup-selection-ALL">ALL</p>
-          <p className="filter-popup-selection-NONE">NONE</p>
-        </div>
-      </div>
-
-      <div className="filter-popup-line"></div>
-
       <div className="filter-popup-checkboxes">
-      {columnValues.map((value) => (
-        <div className="checkbox-section-container" key={value}>
-          <label className="checkbox-container">
-            <input
-              type="checkbox"
-              className="checkbox"
-              value={value}
-              checked={selectedValues.includes(value)}
-              onChange={() => handleCheckboxChange(value)}
-            />
-            <span className="checkmark"></span>
-          </label>
-          <p className="answer-option">{value}</p>
-        </div>
-      ))}
-    </div>
-
-      <div className="filter-popup-line" style={{ marginTop: "35px" }}></div>
+        {columnValues
+          .filter((value) =>
+            value.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+          .map((value) => (
+            <div className="checkbox-section-container" key={value}>
+              <label className="checkbox-container">
+                <input
+                  type="checkbox"
+                  className="checkbox"
+                  value={value}
+                  checked={selectedValues.includes(value)}
+                  onChange={() => handleCheckboxChange(value)}
+                />
+                <span className="checkmark"></span>
+              </label>
+              <p className="answer-option">{value}</p>
+            </div>
+          ))}
+      </div>
       <div className="filter-popup-actions">
-        <button className="filter-popup-button-discard" onClick={onClose}>
+        <button
+          className="filter-popup-button-discard"
+          onClick={() => {
+            onResetFilters(); 
+            onClose(); 
+          }}
+        >
           Discard
         </button>
-        <button className="filter-popup-button-apply" onClick={onClose}>
+        <button
+          className="filter-popup-button-apply"
+          onClick={() => {
+            onFilterApply(selectedValues);
+            onClose();
+          }}
+        >
           Apply
         </button>
       </div>

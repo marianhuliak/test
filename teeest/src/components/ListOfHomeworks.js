@@ -22,22 +22,20 @@ const ListOfHomeworks = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [uniqueStatuses, setUniqueStatuses] = useState([]);
-
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
+  const [sortOrder, setSortOrder] = useState("");
+  const [sortedColumn, setSortedColumn] = useState("");
+  const [filteredByPopup, setFilteredByPopup] = useState([]);
+  const [filters, setFilters] = useState({
+    status: [],
+    type: [],
+    // Додайте інші поля, які ви хочете фільтрувати
+  });
 
-  const [sortOrder, setSortOrder] = useState(""); //
-  const [sortedColumn, setSortedColumn] = useState(""); //
-
-
-  function uniqueColumnValues(data,column) {
-    return [...new Set(data.map(item => item[column]))];
+  function uniqueColumnValues(data, column) {
+    return [...new Set(data.map((item) => item[column]))];
   }
-
-
-
-
-
 
   const handleFilterClick = (e, columnName) => {
     const rect = e.target.getBoundingClientRect();
@@ -46,10 +44,15 @@ const ListOfHomeworks = () => {
       left: rect.left + window.scrollX,
     });
     setPopupVisible(true);
-    setSortedColumn(columnName); //
+    setSortedColumn(columnName);
+    if (columnName === "status" || columnName === "type") {
+      setUniqueStatuses(uniqueColumnValues(homeworks, columnName));
+      console.log("if", columnName);
+    } else {
+      setUniqueStatuses([]);
+      console.log("else",columnName);
 
-    setUniqueStatuses(uniqueColumnValues(homeworks,columnName));
-  
+    }
   };
 
   const fetchHomeworks = async () => {
@@ -85,8 +88,18 @@ const ListOfHomeworks = () => {
       searchLower.length >= 3 &&
       (formatDate(hw.createdAt).toLowerCase().includes(searchLower) ||
         formatDate(hw.dueDate).toLowerCase().includes(searchLower));
-    return matchesTitle || matchesDate;
+  
+    // Фільтруємо за всіма колонками
+    const matchesPopupFilter =
+      (filters.status.length === 0 || filters.status.includes(hw.status)) &&
+      (filters.type.length === 0 || filters.type.includes(hw.type));
+  
+    return (matchesTitle || matchesDate) && matchesPopupFilter;
   });
+
+
+
+  
 
   const sortHomeworks = (homeworks) => {
     if (sortedColumn && sortOrder) {
@@ -112,9 +125,7 @@ const ListOfHomeworks = () => {
         if (typeof valueA === "string" && typeof valueB === "string") {
           valueA = valueA.toLowerCase();
           valueB = valueB.toLowerCase();
-        }
-
-        if (valueA < valueB) return sortOrder === "asc" ? -1 : 1;
+        }if (valueA < valueB) return sortOrder === "asc" ? -1 : 1;
         if (valueA > valueB) return sortOrder === "asc" ? 1 : -1;
         return 0;
       });
@@ -146,6 +157,12 @@ const ListOfHomeworks = () => {
     fetchHomeworks();
   }, []);
 
+  const handleFilterApply = (selectedValues) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [sortedColumn]: selectedValues, 
+    }));
+  };
   return (
     <div className="list-of-homeworks">
       <div className="header">
@@ -193,9 +210,7 @@ const ListOfHomeworks = () => {
                 onClick={handleNextPage}
               />
             </div>
-          </div>
-
-          <div className="homeworks-table-container">
+          </div><div className="homeworks-table-container">
             {loading ? (
               <p>Loading...</p>
             ) : error ? (
@@ -280,61 +295,62 @@ const ListOfHomeworks = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItems.map((hw) => (
-                    <tr key={hw.id}>
+                  {currentItems.map((homework) => (
+                    <tr key={homework.id}>
                       <td>
                         <button
-                          className={`status-${hw.status
+                          className={`status-${homework.status
                             .toLowerCase()
                             .replace(/\s+/g, "-")}`}
                         >
-                          {hw.status}
+                          {homework.status}
                         </button>
                       </td>
-
-                      <td>{formatDate(hw.createdAt)}</td>
-                      <td>{formatDate(hw.dueOn)}</td>
-                      <td>{hw.assignedTo}</td>
-                      <td>{hw.type}</td>
+                      <td>{formatDate(homework.createdAt)}</td>
+                      <td>{formatDate(homework.dueOn)}</td>
+                      <td>{homework.assignedTo}</td>
+                      <td>{homework.type}</td>
                       <td>
                         <button
                           className={
-                            hw.completionRate >= 0 && hw.completionRate <= 30
-                              ? "rate-completion-low"
-                              : hw.completionRate >= 31 &&
-                                hw.completionRate <= 80
-                              ? "rate-completion-middle"
-                              : hw.completionRate >= 81 &&
-                                hw.completionRate <= 100
-                              ? "rate-completion-high"
-                              : ""
-                          }
-                        >
-                          {hw.completionRate}%
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-            {popupVisible && (
-              <FilterPopup
-                position={popupPosition}
-                onClose={() => setPopupVisible(false)}
-                onSortChange={(order) => {
-                  setSortOrder(order);
-                  setPopupVisible(false);
-                }}
-                sortedColumn={sortedColumn}
-                columnValues={uniqueStatuses}
-              />
-            )}
-          </div>
+                            homework.completionRate >= 0 &&
+                            homework.completionRate <= 30? "rate-completion-low"
+                            : homework.completionRate >= 31 &&
+                              homework.completionRate <= 80
+                            ? "rate-completion-middle"
+                            : homework.completionRate >= 81 &&
+                              homework.completionRate <= 100
+                            ? "rate-completion-high"
+                            : ""
+                        }
+                      >
+                        {homework.completionRate}%
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>
-  );
+
+    {popupVisible && (
+      <FilterPopup
+        position={popupPosition}
+        onClose={() => setPopupVisible(false)}
+        onSortChange={(order) => {
+          setSortOrder(order);
+          setPopupVisible(false);
+        }}
+        sortedColumn={sortedColumn}
+        columnValues={uniqueStatuses}
+        onFilterApply={handleFilterApply}
+      />
+    )}
+  </div>
+);
 };
 
 export default ListOfHomeworks;
