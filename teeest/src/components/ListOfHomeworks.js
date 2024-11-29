@@ -8,7 +8,6 @@ import buttonLeft from "../img/list-of-homeworks-button-left.svg";
 import lockIcon from "../img/lock-icon.svg";
 import filterIcon from "../img/filter-icon.svg";
 import "../img/Logo.svg";
-import "../styles/FilterPopup.css";
 import "../styles/ListOfHomeworks.css";
 
 const API_BASE_URL =
@@ -26,11 +25,11 @@ const ListOfHomeworks = () => {
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
   const [sortOrder, setSortOrder] = useState("");
   const [sortedColumn, setSortedColumn] = useState("");
-  const [filteredByPopup, setFilteredByPopup] = useState([]);
+  const [temporarySortedColumn, setTemporarySortedColumn] = useState("");
+
   const [filters, setFilters] = useState({
     status: [],
     type: [],
-    // Додайте інші поля, які ви хочете фільтрувати
   });
 
   function uniqueColumnValues(data, column) {
@@ -44,14 +43,11 @@ const ListOfHomeworks = () => {
       left: rect.left + window.scrollX,
     });
     setPopupVisible(true);
-    setSortedColumn(columnName);
+    setTemporarySortedColumn(columnName);
     if (columnName === "status" || columnName === "type") {
       setUniqueStatuses(uniqueColumnValues(homeworks, columnName));
-      console.log("if", columnName);
     } else {
       setUniqueStatuses([]);
-      console.log("else",columnName);
-
     }
   };
 
@@ -88,18 +84,13 @@ const ListOfHomeworks = () => {
       searchLower.length >= 3 &&
       (formatDate(hw.createdAt).toLowerCase().includes(searchLower) ||
         formatDate(hw.dueDate).toLowerCase().includes(searchLower));
-  
-    // Фільтруємо за всіма колонками
+
     const matchesPopupFilter =
       (filters.status.length === 0 || filters.status.includes(hw.status)) &&
       (filters.type.length === 0 || filters.type.includes(hw.type));
-  
+
     return (matchesTitle || matchesDate) && matchesPopupFilter;
   });
-
-
-
-  
 
   const sortHomeworks = (homeworks) => {
     if (sortedColumn && sortOrder) {
@@ -125,7 +116,8 @@ const ListOfHomeworks = () => {
         if (typeof valueA === "string" && typeof valueB === "string") {
           valueA = valueA.toLowerCase();
           valueB = valueB.toLowerCase();
-        }if (valueA < valueB) return sortOrder === "asc" ? -1 : 1;
+        }
+        if (valueA < valueB) return sortOrder === "asc" ? -1 : 1;
         if (valueA > valueB) return sortOrder === "asc" ? 1 : -1;
         return 0;
       });
@@ -157,12 +149,15 @@ const ListOfHomeworks = () => {
     fetchHomeworks();
   }, []);
 
-  const handleFilterApply = (selectedValues) => {
+  const handleFilterApply = (selectedValues, selectedSortOrder) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
-      [sortedColumn]: selectedValues, 
+      [temporarySortedColumn]: selectedValues,
     }));
+    setSortedColumn(temporarySortedColumn);
+    setSortOrder(selectedSortOrder);
   };
+
   return (
     <div className="list-of-homeworks">
       <div className="header">
@@ -210,7 +205,8 @@ const ListOfHomeworks = () => {
                 onClick={handleNextPage}
               />
             </div>
-          </div><div className="homeworks-table-container">
+          </div>
+          <div className="homeworks-table-container">
             {loading ? (
               <p>Loading...</p>
             ) : error ? (
@@ -224,39 +220,42 @@ const ListOfHomeworks = () => {
                       onClick={(e) => handleFilterClick(e, "status")}
                     >
                       Status{" "}
-                      {sortedColumn === "status" && sortOrder && (
+                      {(sortedColumn === "status" && sortOrder) ||
+                      (filters.status && filters.status.length > 0) ? (
                         <img
                           src={filterIcon}
                           alt="Filter Icon"
                           className={"filter-icon"}
                         />
-                      )}
+                      ) : null}
                     </th>
                     <th
                       id="table-text"
                       onClick={(e) => handleFilterClick(e, "createdAt")}
                     >
                       Available On{" "}
-                      {sortedColumn === "createdAt" && sortOrder && (
+                      {(sortedColumn === "createdAt" && sortOrder) ||
+                      (filters.createdAt && filters.createdAt.length > 0) ? (
                         <img
                           src={filterIcon}
                           alt="Filter Icon"
                           className={"filter-icon"}
                         />
-                      )}
+                      ) : null}
                     </th>
                     <th
                       id="table-text"
                       onClick={(e) => handleFilterClick(e, "dueOn")}
                     >
                       Due On{" "}
-                      {sortedColumn === "dueOn" && sortOrder && (
+                      {(sortedColumn === "dueOn" && sortOrder) ||
+                      (filters.dueOn && filters.dueOn.length > 0) ? (
                         <img
                           src={filterIcon}
                           alt="Filter Icon"
                           className={"filter-icon"}
                         />
-                      )}
+                      ) : null}
                     </th>
                     <th id="table-text">
                       Class{" "}
@@ -271,26 +270,29 @@ const ListOfHomeworks = () => {
                       onClick={(e) => handleFilterClick(e, "type")}
                     >
                       Homework Type{" "}
-                      {sortedColumn === "type" && sortOrder && (
+                      {(sortedColumn === "type" && sortOrder) ||
+                      (filters.type && filters.type.length > 0) ? (
                         <img
                           src={filterIcon}
                           alt="Filter Icon"
                           className={"filter-icon"}
                         />
-                      )}
+                      ) : null}
                     </th>
                     <th
                       id="table-text"
                       onClick={(e) => handleFilterClick(e, "completionRate")}
                     >
                       Completion Rate{" "}
-                      {sortedColumn === "completionRate" && sortOrder && (
+                      {(sortedColumn === "completionRate" && sortOrder) ||
+                      (filters.completionRate &&
+                        filters.completionRate.length > 0) ? (
                         <img
                           src={filterIcon}
                           alt="Filter Icon"
                           className={"filter-icon"}
                         />
-                      )}
+                      ) : null}
                     </th>
                   </tr>
                 </thead>
@@ -314,43 +316,44 @@ const ListOfHomeworks = () => {
                         <button
                           className={
                             homework.completionRate >= 0 &&
-                            homework.completionRate <= 30? "rate-completion-low"
-                            : homework.completionRate >= 31 &&
-                              homework.completionRate <= 80
-                            ? "rate-completion-middle"
-                            : homework.completionRate >= 81 &&
-                              homework.completionRate <= 100
-                            ? "rate-completion-high"
-                            : ""
-                        }
-                      >
-                        {homework.completionRate}%
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+                            homework.completionRate <= 30
+                              ? "rate-completion-low"
+                              : homework.completionRate >= 31 &&
+                                homework.completionRate <= 80
+                              ? "rate-completion-middle"
+                              : homework.completionRate >= 81 &&
+                                homework.completionRate <= 100
+                              ? "rate-completion-high"
+                              : ""
+                          }
+                        >
+                          {homework.completionRate}%
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         </div>
       </div>
-    </div>
 
-    {popupVisible && (
-      <FilterPopup
-        position={popupPosition}
-        onClose={() => setPopupVisible(false)}
-        onSortChange={(order) => {
-          setSortOrder(order);
-          setPopupVisible(false);
-        }}
-        sortedColumn={sortedColumn}
-        columnValues={uniqueStatuses}
-        onFilterApply={handleFilterApply}
-      />
-    )}
-  </div>
-);
+      {popupVisible && (
+        <FilterPopup
+          position={popupPosition}
+          onClose={() => setPopupVisible(false)}
+          onSortChange={(order) => {
+            setSortOrder(order);
+            setPopupVisible(false);
+          }}
+          sortedColumn={sortedColumn}
+          columnValues={uniqueStatuses}
+          onFilterApply={handleFilterApply}
+        />
+      )}
+    </div>
+  );
 };
 
 export default ListOfHomeworks;

@@ -3,13 +3,13 @@ import React, { useState, useEffect, useRef, onResetFilters } from "react";
 const FilterPopup = ({
   position,
   onClose,
-  onSortChange,
   columnValues,
   onFilterApply,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const popupRef = useRef(null);
   const [selectedValues, setSelectedValues] = useState([]);
+  const [sortOrder, setSortOrder] = useState("");
 
   const handleCheckboxChange = (value) => {
     setSelectedValues((prevSelected) =>
@@ -44,10 +44,16 @@ const FilterPopup = ({
         zIndex: 10,
       }}
     >
-      <p className="filter-popup-button" onClick={() => onSortChange("asc")}>
+      <p
+        className={`filter-popup-button ${sortOrder === "asc" ? "active" : ""}`}
+        onClick={() => setSortOrder("asc")}
+      >
         Sort A to Z
       </p>
-      <p className="filter-popup-button" onClick={() => onSortChange("desc")}>
+      <p
+        className={`filter-popup-button ${sortOrder === "desc" ? "active" : ""}`}
+        onClick={() => setSortOrder("desc")}
+      >
         Sort Z to A
       </p>
       <div className="popup-search">
@@ -84,8 +90,9 @@ const FilterPopup = ({
         <button
           className="filter-popup-button-discard"
           onClick={() => {
-            onResetFilters(); 
-            onClose(); 
+            setSelectedValues([]);
+            setSortOrder("");
+            onClose();
           }}
         >
           Discard
@@ -93,7 +100,7 @@ const FilterPopup = ({
         <button
           className="filter-popup-button-apply"
           onClick={() => {
-            onFilterApply(selectedValues);
+            onFilterApply(selectedValues, sortOrder);
             onClose();
           }}
         >

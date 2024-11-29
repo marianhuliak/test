@@ -200,3 +200,22 @@
     color: white;
 
 }
+
+.filter-popup-button{
+  border: none;
+  background-color: transparent;
+
+
+
+}
+
+.filter-popup-button.active {
+  opacity: 0.5;
+}
+
+.filter-popup-button.active:active {
+  transform: scale(0.95);
+
+
+
+}
