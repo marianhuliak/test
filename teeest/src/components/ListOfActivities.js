@@ -1,86 +1,88 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import FilterPopup from "./FilterPopup.js";
 
 import logo from "../img/Logo.svg";
 import buttonRight from "../img/list-of-homeworks-button-right.svg";
 import buttonLeft from "../img/list-of-homeworks-button-left.svg";
-import filterIcon from "../img/filter-icon.svg";
+import plus from "../img/plus-for-list-of-activities.svg";
 import lockIcon from "../img/lock-icon.svg";
+import filterIcon from "../img/filter-icon.svg";
+import launchLiveActivities from "../img/launch-live-activities.svg";
 import "../img/Logo.svg";
-import "../styles/FilterPopup.css";
 import "../styles/ListOfHomeworks.css";
-
+import "../styles/ListOfActivities.css";
+import "../styles/FilterPopup.css";
+import gameMoch from "../img/game-mock.svg";
 
 const API_BASE_URL =
-  "http://127.0.0.1:5001/aylee-learns-english-dev/us-central1/api/api";
+  "http://127.0.0.1:5001/aylee-learns-english-dev/us-central1/api/api/activity?activityId=all";
 
 const ListOfActivities = () => {
-  const [homeworks, setHomeworks] = useState([]);
+  const [activities, setHomeworks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-
+  const [uniqueStatuses, setUniqueStatuses] = useState([]);
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
+  const [sortOrder, setSortOrder] = useState("");
+  const [sortedColumn, setSortedColumn] = useState("");
+  const [temporarySortedColumn, setTemporarySortedColumn] = useState("");
 
-  const [sortOrder, setSortOrder] = useState(""); //
-  const [sortedColumn, setSortedColumn] = useState(""); //
+  const [filters, setFilters] = useState({
+    languageElements: [],
+    primarySkills: [],
+    requiredTime: [],
+  });
+
+  function uniqueColumnValues(data, column) {
+    return [...new Set(data.map((item) => item[column]))];
+  }
 
   const handleFilterClick = (e, columnName) => {
+    ////
     const rect = e.target.getBoundingClientRect();
     setPopupPosition({
       top: rect.bottom + window.scrollY,
       left: rect.left + window.scrollX,
     });
     setPopupVisible(true);
-    setSortedColumn(columnName); //
+    setTemporarySortedColumn(columnName);
+    if (columnName === "status" || columnName === "type") {
+      setUniqueStatuses(uniqueColumnValues(activities, columnName));
+    } else {
+      setUniqueStatuses([]);
+    }
   };
 
   const fetchHomeworks = async () => {
     try {
-      const response = await axios.get(
-        `${API_BASE_URL}/homework?homeworkIds=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22`
-      );
-      setHomeworks(response.data.homeworks);
+      const response = await axios.get(API_BASE_URL);
+      setHomeworks(response.data.activities);
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching homeworks:", error);
+      console.error("Error fetching activities:", error);
       setError("Failed to load data.");
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchHomeworks();
-  }, []);
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    });
-  };
-
-  const filteredHomeworks = homeworks.filter((hw) => {
+  const filteredActivities = activities.filter((activ) => {
     const searchLower = searchTerm.toLowerCase();
-    const matchesTitle = hw.title.toLowerCase().includes(searchLower);
-    const matchesDate =
-      searchLower.length >= 3 &&
-      (formatDate(hw.createdAt).toLowerCase().includes(searchLower) ||
-        formatDate(hw.dueDate).toLowerCase().includes(searchLower));
-    return matchesTitle || matchesDate;
+
+    const matchesPrimarySkills = activ.primarySkills.some((skill) =>
+      skill.toLowerCase().includes(searchLower)
+    );
+
+    return matchesPrimarySkills;
   });
 
-  const sortHomeworks = (homeworks) => {
+  const sortHomeworks = (activities) => {
     if (sortedColumn && sortOrder) {
-      return [...homeworks].sort((a, b) => {
+      return [...activities].sort((a, b) => {
         let valueA = a[sortedColumn];
         let valueB = b[sortedColumn];
 
@@ -103,16 +105,15 @@ const ListOfActivities = () => {
           valueA = valueA.toLowerCase();
           valueB = valueB.toLowerCase();
         }
-
         if (valueA < valueB) return sortOrder === "asc" ? -1 : 1;
         if (valueA > valueB) return sortOrder === "asc" ? 1 : -1;
         return 0;
       });
     }
-    return homeworks;
+    return activities;
   };
 
-  const sortedHomeworks = sortHomeworks(filteredHomeworks);
+  const sortedHomeworks = sortHomeworks(filteredActivities);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentItems = sortedHomeworks.slice(
@@ -121,7 +122,7 @@ const ListOfActivities = () => {
   );
 
   const handleNextPage = () => {
-    if (startIndex + itemsPerPage < filteredHomeworks.length) {
+    if (startIndex + itemsPerPage < filteredActivities.length) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -132,8 +133,21 @@ const ListOfActivities = () => {
     }
   };
 
+  useEffect(() => {
+    fetchHomeworks();
+  }, []);
+
+  const handleFilterApply = (selectedValues, selectedSortOrder) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [temporarySortedColumn]: selectedValues,
+    }));
+    setSortedColumn(temporarySortedColumn);
+    setSortOrder(selectedSortOrder);
+  };
+
   return (
-    <div className="list-of-homeworks">
+    <div className="list-of-activities">
       <div className="header">
         <div className="header-logo">
           <img src={logo} alt="logo" className="header-logo-img" />
@@ -160,8 +174,8 @@ const ListOfActivities = () => {
             <div className="content-pagination">
               <p className="content-pagination-info">
                 {startIndex + 1}-
-                {Math.min(startIndex + itemsPerPage, filteredHomeworks.length)}{" "}
-                of {filteredHomeworks.length}
+                {Math.min(startIndex + itemsPerPage, filteredActivities.length)}{" "}
+                of {filteredActivities.length}
               </p>
               <img
                 src={buttonLeft}
@@ -177,40 +191,47 @@ const ListOfActivities = () => {
               />
             </div>
           </div>
-          {loading ? (
+          <div className="activities-table-container">
+            {loading ? (
               <p>Loading...</p>
             ) : error ? (
               <p className="error">{error}</p>
             ) : (
-              <table className="homeworks-table">
+              <table className="activities-table">
                 <thead>
                   <tr>
                     <th
                       id="table-text"
-                      onClick={(e) => handleFilterClick(e, "LanguageElementstus")}//
+                      onClick={(e) => handleFilterClick(e, "languageElements")}
                     >
                       Language Elements{" "}
-                      {sortedColumn === "LanguageElements" && sortOrder && (//
+                      {(sortedColumn === "languageElements" && sortOrder) ||
+                      (filters.languageElements &&
+                        filters.languageElements.length > 0) ? (
                         <img
                           src={filterIcon}
                           alt="Filter Icon"
                           className={"filter-icon"}
                         />
-                      )}
+                      ) : null}
                     </th>
+
                     <th
                       id="table-text"
-                      onClick={(e) => handleFilterClick(e, "PrimarySkills")}
+                      onClick={(e) => handleFilterClick(e, "primarySkills")}
                     >
-                      Primary Skills
-                      {sortedColumn === "PrimarySkills" && sortOrder && (//
+                      Primary Skills{" "}
+                      {(sortedColumn === "primarySkills" && sortOrder) ||
+                      (filters.primarySkills &&
+                        filters.primarySkills.length > 0) ? (
                         <img
                           src={filterIcon}
                           alt="Filter Icon"
                           className={"filter-icon"}
                         />
-                      )}
+                      ) : null}
                     </th>
+
                     <th id="table-text">
                       Class{" "}
                       <img
@@ -219,101 +240,100 @@ const ListOfActivities = () => {
                         alt="lockIcon"
                       />
                     </th>
+                    {/*              */}
                     <th
                       id="table-text"
-                      onClick={(e) => handleFilterClick(e, "game")}//
+                      onClick={(e) => handleFilterClick(e, "dueOn")}
                     >
                       Game{" "}
-                      {sortedColumn === "game" && sortOrder && (//
+                      {(sortedColumn === "dueOn" && sortOrder) ||
+                      (filters.dueOn && filters.dueOn.length > 0) ? (
                         <img
                           src={filterIcon}
                           alt="Filter Icon"
                           className={"filter-icon"}
                         />
-                      )}
+                      ) : null}
                     </th>
+
+                    {/*              */}
+
                     <th
                       id="table-text"
-                      onClick={(e) => handleFilterClick(e, "Time required")}//
+                      onClick={(e) => handleFilterClick(e, "requiredTime")}
                     >
                       Time required{" "}
-                      {sortedColumn === "Time required" && sortOrder && (//
+                      {(sortedColumn === "requiredTime" && sortOrder) ||
+                      (filters.requiredTime &&
+                        filters.requiredTime.length > 0) ? (
                         <img
                           src={filterIcon}
                           alt="Filter Icon"
                           className={"filter-icon"}
                         />
-                      )}
+                      ) : null}
                     </th>
+
                     <th
                       id="table-text"
-                      onClick={(e) => handleFilterClick(e, "Launch Live activities")}//
+                      onClick={(e) => handleFilterClick(e, "completionRate")}
                     >
                       Launch Live activities{" "}
-                      {sortedColumn === "Launch Live activities" && sortOrder && (//
+                      {(sortedColumn === "completionRate" && sortOrder) ||
+                      (filters.completionRate &&
+                        filters.completionRate.length > 0) ? (
                         <img
                           src={filterIcon}
                           alt="Filter Icon"
                           className={"filter-icon"}
                         />
-                      )}
+                      ) : null}
                     </th>
-                    <th
-                      id="table-text"
-                      onClick={(e) => handleFilterClick(e, "Add to Homework")}//
-                    >
-                      Add to Homework{" "}
-                      {sortedColumn === "Launch Live activities" && sortOrder && (//
-                        <img
-                          src={filterIcon}
-                          alt="Filter Icon"
-                          className={"filter-icon"}
-                        />
-                      )}
-                    </th>
+                    <th id="table-text">Add to Homework </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItems.map((hw) => (
-                    <tr key={hw.id}>
+                  {currentItems.map((activ) => (
+                    <tr key={activ.id}>
                       <td>
-                        <button
-                          className={`status-${hw.status
-                            .toLowerCase()
-                            .replace(/\s+/g, "-")}`}
-                        >
-                          {hw.status}
-                        </button>
+                        <p className={"language-elements"}>
+                          {activ.languageElements}
+                        </p>
                       </td>
-
-                      <td>{formatDate(hw.createdAt)}</td>
-                      <td>{formatDate(hw.dueDate)}</td>
-                      <td>{hw.class}</td>
-                      <td>{hw.type}</td>
+                      <td>{activ.primarySkills.join(", ")}</td>
+                      <td>{activ.assignedTo.join(", ")}</td>
+                      <td><img src={gameMoch} /></td>
                       <td>
-                        <button
-                          className={
-                            hw.rate >= 0 && hw.rate <= 30
-                              ? "rate-completion-low"
-                              : hw.rate >= 31 && hw.rate <= 80
-                              ? "rate-completion-middle"
-                              : hw.rate >= 81 && hw.rate <= 100
-                              ? "rate-completion-high"
-                              : ""
-                          }
-                        >
-                          {hw.rate}%
-                        </button>
+                        {activ.requiredTime}
+                        {" Min"}
                       </td>
+                      <td> <img src={launchLiveActivities}/></td>
+                      <td>
+                        <p className="rate-completion">{activ.dueOn}</p>
+                      </td>
+                      <td>{<img src={plus} alt="Plus" />} </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             )}
-
-          
+          </div>
         </div>
       </div>
+
+      {popupVisible && (
+        <FilterPopup
+          position={popupPosition}
+          onClose={() => setPopupVisible(false)}
+          onSortChange={(order) => {
+            setSortOrder(order);
+            setPopupVisible(false);
+          }}
+          sortedColumn={sortedColumn}
+          columnValues={uniqueStatuses}
+          onFilterApply={handleFilterApply}
+        />
+      )}
     </div>
   );
 };

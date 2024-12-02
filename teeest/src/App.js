@@ -7,7 +7,7 @@ import ListOfActivities from './components/ListOfActivities';
 function App() {
   return (
     <div className="App">
-      <ListOfHomeworks />
+      <ListOfActivities />
     </div>
   );
 }

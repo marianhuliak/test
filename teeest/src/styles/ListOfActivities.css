@@ -1,0 +1,250 @@
+.list-of-activities {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  box-sizing: border-box;
+  height: 72px;
+  display: flex;
+  justify-content: space-between;
+  background-color: white;
+  padding: 16px;
+}
+
+.header-logo {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.header-logo-img {
+  width: 40px;
+  height: 40px;
+}
+
+.header-logo-text {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: left;
+}
+
+.header-login {
+  display: flex;
+  align-items: center;
+}
+
+.content {
+  padding: 16px;
+  background-color: #e9eeef;
+  height: 100vh;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.container {
+  background-color: white;
+  justify-content: space-between;
+  height: auto;
+
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.content-top {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.content-container {
+}
+
+.content-top-add-button {
+  box-sizing: border-box;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.03em;
+  color: #004b52;
+  text-align: center;
+  text-underline-position: from-font;
+  background-color: white;
+  width: 134px;
+  height: 36px;
+  margin-top: 2px;
+  outline: none;
+  border: 1px solid #e9eeef;
+  border-radius: 8px;
+}
+
+.content-top-search-input {
+  box-sizing: border-box;
+  width: 320px;
+  height: 40px;
+  border-radius: 8px;
+  padding: 10px 16px 10px 16px;
+  outline: none;
+  border: 1px solid #e9eeef;
+}
+
+.content-top-search-input::placeholder {
+  background-image: url("../img/magnifying-glass.svg");
+  background-repeat: no-repeat;
+  background-position: left;
+
+  background-size: 17px 17px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  padding-left: 26.34px;
+}
+
+.content-pagination {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.content-pagination-info {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #004b52;
+  opacity: 0.46;
+}
+
+.content-pagination-button {
+  width: 40px;
+}
+
+.activities-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.activities-table {
+  width: 100vw;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin-top: 8px;
+  overflow-x: hidden;
+}
+
+.activities-table th,
+.activities-table td {
+  padding: 8px;
+  text-align: left;
+  word-wrap: break-word;
+}
+
+#table-text {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  opacity: 0.46;
+  text-align: left;
+  text-decoration-skip-ink: none;
+  color: #004b52;
+  cursor: pointer;
+}
+
+.activities-table tr {
+  border-top: 1px solid rgba(0, 75, 82, 0.16);
+}
+
+.activities-table tr:first-child {
+  border-top: none; /* Забираємо лінію для першого рядка */
+}
+
+.activities-table th,
+.activities-table td {
+  padding: 12px 0 12px 0;
+}
+
+.activities-table {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #004b52;
+}
+
+.content-pagination-button:active {
+  opacity: 0.4; /* Зменшення прозорості при натисканні */
+}
+
+.status-draft,
+.status-published,
+.status-reviewed,
+.status-pending-review,
+.rate-completion-low,
+.rate-completion-middle,
+.rate-completion-high {
+  border: none;
+  width: auto;
+  height: 24px;
+  padding: 4px 8px 4px 8px;
+  gap: 4px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #004b52;
+}
+
+.status-draft {
+  background-color: #d9e1e3;
+}
+
+.status-published {
+  background-color: #b7e885;
+}
+
+.status-pending-review {
+  background-color: #fcf196;
+}
+
+.status-reviewed {
+  background-color: #d9e1e3;
+}
+
+.rate-completion-low {
+  background-color: #d9e1e3;
+}
+
+.rate-completion-middle {
+  background-color: #fcf196;
+}
+
+.rate-completion-high {
+  background-color: #b7e885;
+}
+
+.filter-icon,
+.lock-icon {
+  width: 9px;
+}
+
+.language-elements {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #004b52;
+}
