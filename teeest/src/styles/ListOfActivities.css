@@ -38,7 +38,8 @@
 .content {
   padding: 16px;
   background-color: #e9eeef;
-  height: 100vh;
+  min-height: 100vh; 
+  height: auto;      
 }
 
 .content-container {
@@ -62,8 +63,6 @@
   gap: 8px;
 }
 
-.content-container {
-}
 
 .content-top-add-button {
   box-sizing: border-box;
@@ -128,7 +127,7 @@
 
 .activities-table-container {
   width: 100%;
-  overflow-x: auto;
+  overflow-x: hidden;
 }
 
 .activities-table {
@@ -138,6 +137,18 @@
   margin-top: 8px;
   overflow-x: hidden;
 }
+
+.activities-table th,
+.activities-table td {
+  border-top: 1px solid rgba(0, 75, 82, 0.16);
+  border-left: none;
+  border-right: none;
+}
+ 
+.activities-table tr:first-child th {
+  border-top: none; /* Прибирає верхню лінію у першому рядку */
+}
+
 
 .activities-table th,
 .activities-table td {
@@ -157,12 +168,9 @@
   cursor: pointer;
 }
 
-.activities-table tr {
-  border-top: 1px solid rgba(0, 75, 82, 0.16);
-}
 
 .activities-table tr:first-child {
-  border-top: none; /* Забираємо лінію для першого рядка */
+  border-top: none; 
 }
 
 .activities-table th,

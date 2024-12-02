@@ -1,11 +1,6 @@
 import React, { useState, useEffect, useRef, onResetFilters } from "react";
 
-const FilterPopup = ({
-  position,
-  onClose,
-  columnValues,
-  onFilterApply,
-}) => {
+const FilterPopup = ({ position, onClose, columnValues, onFilterApply }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const popupRef = useRef(null);
   const [selectedValues, setSelectedValues] = useState([]);
@@ -18,6 +13,18 @@ const FilterPopup = ({
         : [...prevSelected, value]
     );
   };
+
+  const handleSelectAll = () => {
+    setSelectedValues(columnValues);
+  };
+
+  const handleSelectNone = () => {
+    setSelectedValues([]);
+  };
+
+  const filteredColumnValues = columnValues.filter((value) =>
+    value.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -51,7 +58,9 @@ const FilterPopup = ({
         Sort A to Z
       </p>
       <p
-        className={`filter-popup-button ${sortOrder === "desc" ? "active" : ""}`}
+        className={`filter-popup-button ${
+          sortOrder === "desc" ? "active" : ""
+        }`}
         onClick={() => setSortOrder("desc")}
       >
         Sort Z to A
@@ -65,26 +74,38 @@ const FilterPopup = ({
           className="popup-search-input"
         />
       </div>
+
+      <div className="filter-popup-selection">
+        <p className="filter-popup-selection-selected">
+          {selectedValues.length} selected
+        </p>
+        <div className="filter-popup-selection-container">
+          <p className="filter-popup-selection-select">Select:</p>
+          <p className="filter-popup-selection-ALL" onClick={handleSelectAll}>
+            ALL
+          </p>
+          <p className="filter-popup-selection-NONE" onClick={handleSelectNone}>
+            NONE
+          </p>
+        </div>
+      </div>
+
       <div className="filter-popup-checkboxes">
-        {columnValues
-          .filter((value) =>
-            value.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-          .map((value) => (
-            <div className="checkbox-section-container" key={value}>
-              <label className="checkbox-container">
-                <input
-                  type="checkbox"
-                  className="checkbox"
-                  value={value}
-                  checked={selectedValues.includes(value)}
-                  onChange={() => handleCheckboxChange(value)}
-                />
-                <span className="checkmark"></span>
-              </label>
-              <p className="answer-option">{value}</p>
-            </div>
-          ))}
+        {filteredColumnValues.map((value) => (
+          <div className="checkbox-section-container" key={value}>
+            <label className="checkbox-container">
+              <input
+                type="checkbox"
+                className="checkbox"
+                value={value}
+                checked={selectedValues.includes(value)}
+                onChange={() => handleCheckboxChange(value)}
+              />
+              <span className="checkmark"></span>
+            </label>
+            <p className="answer-option">{value}</p>
+          </div>
+        ))}
       </div>
       <div className="filter-popup-actions">
         <button

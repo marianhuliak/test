@@ -38,9 +38,20 @@
 .content {
   padding: 16px;
   background-color: #e9eeef;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
 }
 
+.homeworks-table th,
+.homeworks-table td {
+  border-top: 1px solid rgba(0, 75, 82, 0.16);
+  border-left: none;
+  border-right: none;
+}
+ 
+.homeworks-table tr:first-child th {
+  border-top: none; /* Прибирає верхню лінію у першому рядку */
+}
 .content-container {
   display: flex;
   flex-direction: row;
@@ -128,7 +139,13 @@
 
 .homeworks-table-container {
   width: 100%;
-  overflow-x: auto;
+  overflow-x: hidden;
+}
+
+
+
+.activities-table tr:first-child {
+  border-top: none; 
 }
 
 .homeworks-table {
@@ -204,7 +221,6 @@
   text-underline-position: from-font;
   text-decoration-skip-ink: none;
   color: #004b52;
- 
 }
 
 .status-draft {
@@ -235,8 +251,7 @@
   background-color: #b7e885;
 }
 
-
-.filter-icon, .lock-icon {
+.filter-icon,
+.lock-icon {
   width: 9px;
 }
-

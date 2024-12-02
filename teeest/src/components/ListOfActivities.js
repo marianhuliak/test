@@ -9,17 +9,16 @@ import plus from "../img/plus-for-list-of-activities.svg";
 import lockIcon from "../img/lock-icon.svg";
 import filterIcon from "../img/filter-icon.svg";
 import launchLiveActivities from "../img/launch-live-activities.svg";
-import "../img/Logo.svg";
-import "../styles/ListOfHomeworks.css";
+import gameMoch from "../img/game-mock.svg";
+
 import "../styles/ListOfActivities.css";
 import "../styles/FilterPopup.css";
-import gameMoch from "../img/game-mock.svg";
 
 const API_BASE_URL =
   "http://127.0.0.1:5001/aylee-learns-english-dev/us-central1/api/api/activity?activityId=all";
 
 const ListOfActivities = () => {
-  const [activities, setHomeworks] = useState([]);
+  const [activities, setActivities] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -39,7 +38,7 @@ const ListOfActivities = () => {
   });
 
   function uniqueColumnValues(data, column) {
-    return [...new Set(data.map((item) => item[column]))];
+      return [...new Set(data.map((item) => item[column]))];
   }
 
   const handleFilterClick = (e, columnName) => {
@@ -51,7 +50,11 @@ const ListOfActivities = () => {
     });
     setPopupVisible(true);
     setTemporarySortedColumn(columnName);
-    if (columnName === "status" || columnName === "type") {
+    if (
+      columnName === "languageElements" ||
+      columnName === "primarySkills" ||
+      columnName === "requiredTime"
+    ) {
       setUniqueStatuses(uniqueColumnValues(activities, columnName));
     } else {
       setUniqueStatuses([]);
@@ -61,7 +64,7 @@ const ListOfActivities = () => {
   const fetchHomeworks = async () => {
     try {
       const response = await axios.get(API_BASE_URL);
-      setHomeworks(response.data.activities);
+      setActivities(response.data.activities);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching activities:", error);
@@ -72,15 +75,37 @@ const ListOfActivities = () => {
 
   const filteredActivities = activities.filter((activ) => {
     const searchLower = searchTerm.toLowerCase();
-
+  
     const matchesPrimarySkills = activ.primarySkills.some((skill) =>
       skill.toLowerCase().includes(searchLower)
     );
-
-    return matchesPrimarySkills;
+  
+    const matchesFilters = (columnName, selectedValues) => {
+      if (selectedValues.length > 0) {
+        return selectedValues.some((filterValue) => {
+          const columnValue = activ[columnName];
+  
+          if (typeof columnValue === "number") {
+            return columnValue === filterValue;
+          }
+  
+          if (typeof columnValue === "string") {
+            return columnValue.toLowerCase().includes(filterValue.toLowerCase());
+          }
+          return false;
+        });
+      }
+      return true;
+    };
+  
+    const matchesLanguageElements = matchesFilters("languageElements", filters.languageElements);
+    const matchesPrimarySkillsFilter = matchesFilters("primarySkills", filters.primarySkills);
+    const matchesRequiredTime = matchesFilters("requiredTime", filters.requiredTime);
+  
+    return matchesPrimarySkills && matchesLanguageElements && matchesPrimarySkillsFilter && matchesRequiredTime;
   });
-
-  const sortHomeworks = (activities) => {
+  
+  const sortActivities = (activities) => {
     if (sortedColumn && sortOrder) {
       return [...activities].sort((a, b) => {
         let valueA = a[sortedColumn];
@@ -113,10 +138,10 @@ const ListOfActivities = () => {
     return activities;
   };
 
-  const sortedHomeworks = sortHomeworks(filteredActivities);
+  const sortedActivities = sortActivities(filteredActivities);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = sortedHomeworks.slice(
+  const currentItems = sortedActivities.slice(
     startIndex,
     startIndex + itemsPerPage
   );
@@ -289,7 +314,21 @@ const ListOfActivities = () => {
                         />
                       ) : null}
                     </th>
-                    <th id="table-text">Add to Homework </th>
+                    <th
+                      id="table-text"
+                      onClick={(e) => handleFilterClick(e, "add")}
+                    >
+                      Add to Homework
+                      {(sortedColumn === "add" && sortOrder) ||
+                      (filters.completionRate &&
+                        filters.completionRate.length > 0) ? (
+                        <img
+                          src={filterIcon}
+                          alt="Filter Icon"
+                          className={"filter-icon"}
+                        />
+                      ) : null}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -302,12 +341,17 @@ const ListOfActivities = () => {
                       </td>
                       <td>{activ.primarySkills.join(", ")}</td>
                       <td>{activ.assignedTo.join(", ")}</td>
-                      <td><img src={gameMoch} /></td>
+                      <td>
+                        <img src={gameMoch} />
+                      </td>
                       <td>
                         {activ.requiredTime}
                         {" Min"}
                       </td>
-                      <td> <img src={launchLiveActivities}/></td>
+                      <td>
+                        {" "}
+                        <img src={launchLiveActivities} />
+                      </td>
                       <td>
                         <p className="rate-completion">{activ.dueOn}</p>
                       </td>
