@@ -3,8 +3,8 @@ import axios from "axios";
 import FilterPopup from "./FilterPopup.js";
 
 import logo from "../img/Logo.svg";
-import buttonRight from "../img/list-of-homeworks-button-right.svg";
-import buttonLeft from "../img/list-of-homeworks-button-left.svg";
+import buttonRight from "../img/lists-button-right.svg";
+import buttonLeft from "../img/lists-button-left.svg";
 import lockIcon from "../img/lock-icon.svg";
 import filterIcon from "../img/filter-icon.svg";
 import "../img/Logo.svg";
@@ -155,7 +155,7 @@ const ListOfHomeworks = () => {
       [temporarySortedColumn]: selectedValues,
     }));
     setSortedColumn(temporarySortedColumn);
-    setSortOrder(selectedSortOrder);
+    setSortOrder(selectedSortOrder); 
   };
 
   return (
@@ -214,7 +214,7 @@ const ListOfHomeworks = () => {
             ) : (
               <table className="homeworks-table">
                 <thead>
-                  <tr>
+                <tr>
                     <th
                       id="table-text"
                       onClick={(e) => handleFilterClick(e, "status")}

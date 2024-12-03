@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, onResetFilters } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const FilterPopup = ({ position, onClose, columnValues, onFilterApply }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -39,6 +39,13 @@ const FilterPopup = ({ position, onClose, columnValues, onFilterApply }) => {
     };
   }, [onClose]);
 
+  const handleSortChange = (order) => {
+    setSortOrder(order);
+    onFilterApply(selectedValues, order); 
+    onClose();  
+  };
+
+
   return (
     <div
       ref={popupRef}
@@ -53,7 +60,7 @@ const FilterPopup = ({ position, onClose, columnValues, onFilterApply }) => {
     >
       <p
         className={`filter-popup-button ${sortOrder === "asc" ? "active" : ""}`}
-        onClick={() => setSortOrder("asc")}
+        onClick={() => handleSortChange("asc")} // Зміна: без підтвердження кнопкою "Apply"
       >
         Sort A to Z
       </p>
@@ -61,7 +68,7 @@ const FilterPopup = ({ position, onClose, columnValues, onFilterApply }) => {
         className={`filter-popup-button ${
           sortOrder === "desc" ? "active" : ""
         }`}
-        onClick={() => setSortOrder("desc")}
+        onClick={() => handleSortChange("desc")} // Зміна: без підтвердження кнопкою "Apply"
       >
         Sort Z to A
       </p>

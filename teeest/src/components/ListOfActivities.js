@@ -3,8 +3,8 @@ import axios from "axios";
 import FilterPopup from "./FilterPopup.js";
 
 import logo from "../img/Logo.svg";
-import buttonRight from "../img/list-of-homeworks-button-right.svg";
-import buttonLeft from "../img/list-of-homeworks-button-left.svg";
+import buttonRight from "../img/lists-button-right.svg";
+import buttonLeft from "../img/lists-button-left.svg";
 import plus from "../img/plus-for-list-of-activities.svg";
 import lockIcon from "../img/lock-icon.svg";
 import filterIcon from "../img/filter-icon.svg";
@@ -61,7 +61,7 @@ const ListOfActivities = () => {
     }
   };
 
-  const fetchHomeworks = async () => {
+  const fetchActivities = async () => {
     try {
       const response = await axios.get(API_BASE_URL);
       setActivities(response.data.activities);
@@ -175,7 +175,7 @@ const ListOfActivities = () => {
   };
 
   useEffect(() => {
-    fetchHomeworks();
+    fetchActivities();
   }, []);
 
   const handleFilterApply = (selectedValues, selectedSortOrder) => {
@@ -184,7 +184,7 @@ const ListOfActivities = () => {
       [temporarySortedColumn]: selectedValues,
     }));
     setSortedColumn(temporarySortedColumn);
-    setSortOrder(selectedSortOrder);
+    setSortOrder(selectedSortOrder);  // Зміна: одразу застосовуємо сортування
   };
 
   return (
@@ -249,6 +249,7 @@ const ListOfActivities = () => {
                       {(sortedColumn === "languageElements" && sortOrder) ||
                       (filters.languageElements &&
                         filters.languageElements.length > 0) ? (
+                          
                         <img
                           src={filterIcon}
                           alt="Filter Icon"
@@ -393,6 +394,7 @@ const ListOfActivities = () => {
           sortedColumn={sortedColumn}
           columnValues={uniqueStatuses}
           onFilterApply={handleFilterApply}
+          columnName="columnName" 
         />
       )}
     </div>
