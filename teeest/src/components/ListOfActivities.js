@@ -38,7 +38,7 @@ const ListOfActivities = () => {
   });
 
   function uniqueColumnValues(data, column) {
-      return [...new Set(data.map((item) => item[column]))];
+    return [...new Set(data.map((item) => item[column]))];
   }
 
   const handleFilterClick = (e, columnName) => {
@@ -75,36 +75,52 @@ const ListOfActivities = () => {
 
   const filteredActivities = activities.filter((activ) => {
     const searchLower = searchTerm.toLowerCase();
-  
+
     const matchesPrimarySkills = activ.primarySkills.some((skill) =>
       skill.toLowerCase().includes(searchLower)
     );
-  
+
     const matchesFilters = (columnName, selectedValues) => {
       if (selectedValues.length > 0) {
         return selectedValues.some((filterValue) => {
           const columnValue = activ[columnName];
-  
+
           if (typeof columnValue === "number") {
             return columnValue === filterValue;
           }
-  
+
           if (typeof columnValue === "string") {
-            return columnValue.toLowerCase().includes(filterValue.toLowerCase());
+            return columnValue
+              .toLowerCase()
+              .includes(filterValue.toLowerCase());
           }
           return false;
         });
       }
       return true;
     };
-  
-    const matchesLanguageElements = matchesFilters("languageElements", filters.languageElements);
-    const matchesPrimarySkillsFilter = matchesFilters("primarySkills", filters.primarySkills);
-    const matchesRequiredTime = matchesFilters("requiredTime", filters.requiredTime);
-  
-    return matchesPrimarySkills && matchesLanguageElements && matchesPrimarySkillsFilter && matchesRequiredTime;
+
+    const matchesLanguageElements = matchesFilters(
+      "languageElements",
+      filters.languageElements
+    );
+    const matchesPrimarySkillsFilter = matchesFilters(
+      "primarySkills",
+      filters.primarySkills
+    );
+    const matchesRequiredTime = matchesFilters(
+      "requiredTime",
+      filters.requiredTime
+    );
+
+    return (
+      matchesPrimarySkills &&
+      matchesLanguageElements &&
+      matchesPrimarySkillsFilter &&
+      matchesRequiredTime
+    );
   });
-  
+
   const sortActivities = (activities) => {
     if (sortedColumn && sortOrder) {
       return [...activities].sort((a, b) => {
@@ -339,22 +355,23 @@ const ListOfActivities = () => {
                           {activ.languageElements}
                         </p>
                       </td>
+
                       <td>{activ.primarySkills.join(", ")}</td>
                       <td>{activ.assignedTo.join(", ")}</td>
                       <td>
                         <img src={gameMoch} />
                       </td>
+
                       <td>
                         {activ.requiredTime}
                         {" Min"}
                       </td>
+
                       <td>
                         {" "}
                         <img src={launchLiveActivities} />
                       </td>
-                      <td>
-                        <p className="rate-completion">{activ.dueOn}</p>
-                      </td>
+
                       <td>{<img src={plus} alt="Plus" />} </td>
                     </tr>
                   ))}

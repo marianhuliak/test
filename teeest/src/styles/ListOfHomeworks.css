@@ -255,3 +255,9 @@
 .lock-icon {
   width: 9px;
 }
+
+
+.filter-popup-checkboxes {
+  max-height: 204px; 
+  overflow-y: auto;
+}

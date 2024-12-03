@@ -38,8 +38,8 @@
 .content {
   padding: 16px;
   background-color: #e9eeef;
-  min-height: 100vh; 
-  height: auto;      
+  min-height: 100vh;
+  height: auto;
 }
 
 .content-container {
@@ -144,11 +144,10 @@
   border-left: none;
   border-right: none;
 }
- 
-.activities-table tr:first-child th {
-  border-top: none; /* Прибирає верхню лінію у першому рядку */
-}
 
+.activities-table tr:first-child th {
+  border-top: none; 
+}
 
 .activities-table th,
 .activities-table td {
@@ -169,9 +168,9 @@
 }
 
 
-.activities-table tr:first-child {
-  border-top: none; 
-}
+
+
+
 
 .activities-table th,
 .activities-table td {
@@ -189,7 +188,7 @@
 }
 
 .content-pagination-button:active {
-  opacity: 0.4; /* Зменшення прозорості при натисканні */
+  opacity: 0.4; 
 }
 
 .status-draft,
@@ -255,4 +254,9 @@
   text-underline-position: from-font;
   text-decoration-skip-ink: none;
   color: #004b52;
+}
+
+.filter-popup-checkboxes {
+  max-height: 204px; 
+  overflow-y: auto;
 }
