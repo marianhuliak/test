@@ -158,6 +158,7 @@ const ListOfHomeworks = () => {
     setSortOrder(selectedSortOrder); 
   };
 
+  
   return (
     <div className="list-of-homeworks">
       <div className="header">
@@ -214,9 +215,10 @@ const ListOfHomeworks = () => {
             ) : (
               <table className="homeworks-table">
                 <thead>
-                <tr>
+                  <tr>
                     <th
                       id="table-text"
+                      className={popupVisible ? 'popup-visible' : ''}
                       onClick={(e) => handleFilterClick(e, "status")}
                     >
                       Status{" "}
@@ -231,6 +233,7 @@ const ListOfHomeworks = () => {
                     </th>
                     <th
                       id="table-text"
+                      className={popupVisible ? 'popup-visible' : ''}
                       onClick={(e) => handleFilterClick(e, "createdAt")}
                     >
                       Available On{" "}
@@ -245,6 +248,7 @@ const ListOfHomeworks = () => {
                     </th>
                     <th
                       id="table-text"
+                      className={popupVisible ? 'popup-visible' : ''}
                       onClick={(e) => handleFilterClick(e, "dueOn")}
                     >
                       Due On{" "}
@@ -267,6 +271,7 @@ const ListOfHomeworks = () => {
                     </th>
                     <th
                       id="table-text"
+                      className={popupVisible ? 'popup-visible' : ''}
                       onClick={(e) => handleFilterClick(e, "type")}
                     >
                       Homework Type{" "}
@@ -281,6 +286,7 @@ const ListOfHomeworks = () => {
                     </th>
                     <th
                       id="table-text"
+                      className={popupVisible ? 'popup-visible' : ''}
                       onClick={(e) => handleFilterClick(e, "completionRate")}
                     >
                       Completion Rate{" "}
