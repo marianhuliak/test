@@ -1,0 +1,177 @@
+.list-of-homeworks {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .header {
+    box-sizing: border-box;
+    height: 72px;
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    padding: 16px;
+  }
+  
+  .header-logo {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  
+  .header-logo-img {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .header-logo-text {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: left;
+  }
+  
+  .header-login {
+    display: flex;
+    align-items: center;
+  }
+  
+  .content {
+    padding: 16px;
+    background-color: #e9eeef;
+    min-height: 100vh;
+    height: auto;
+  }
+  
+  .container {
+    background-color: white;
+    justify-content: space-between;
+    height: auto;
+    border-radius: 10px;
+    padding: 16px;
+  }
+  
+  .content-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  .content-top {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+  }
+  
+  .content-top-search-input {
+    box-sizing: border-box;
+    width: 320px;
+    height: 40px;
+    border-radius: 8px;
+    padding: 10px 16px;
+    outline: none;
+    border: 1px solid #e9eeef;
+  }
+  
+  .content-pagination {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+  }
+  
+  .content-pagination-info {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: left;
+    color: #004b52;
+    opacity: 0.46;
+  }
+  
+  .content-pagination-button {
+    width: 40px;
+  }
+  
+  .homeworks-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin-top: 8px;
+  }
+  
+  .homeworks-table th,
+  .homeworks-table td {
+    border-top: 1px solid rgba(0, 75, 82, 0.16);
+    padding: 12px 0;
+    text-align: left;
+  }
+  
+  .homeworks-table tr:first-child {
+    border-top: none;
+  }
+  
+  #table-text {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 16px;
+    opacity: 0.46;
+    text-align: left;
+    color: #004b52;
+    cursor: pointer;
+  }
+  
+  .content-pagination-button:active {
+    opacity: 0.4;
+  }
+  
+  .status-draft,
+  .status-published,
+  .status-reviewed,
+  .status-pending-review,
+  .rate-completion-low,
+  .rate-completion-middle,
+  .rate-completion-high {
+    border: none;
+    width: auto;
+    height: 24px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: center;
+    color: #004b52;
+  }
+  
+  .status-draft {
+    background-color: #d9e1e3;
+  }
+  
+  .status-published {
+    background-color: #b7e885;
+  }
+  
+  .status-pending-review {
+    background-color: #fcf196;
+  }
+  
+  .status-reviewed {
+    background-color: #d9e1e3;
+  }
+  
+  .rate-completion-low {
+    background-color: #d9e1e3;
+  }
+  
+  .rate-completion-middle {
+    background-color: #fcf196;
+  }
+  
+  .rate-completion-high {
+    background-color: #b7e885;
+  }
+  
+  .filter-popup-checkboxes {
+    max-height: 204px;
+    overflow-y: auto;
+  }
+  

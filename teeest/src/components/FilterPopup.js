@@ -15,6 +15,7 @@ const FilterPopup = ({ position, onClose, columnValues, onFilterApply }) => {
   };
 
   const handleSelectAll = () => {
+    console.log(columnValues);
     setSelectedValues(columnValues);
   };
 
@@ -23,7 +24,8 @@ const FilterPopup = ({ position, onClose, columnValues, onFilterApply }) => {
   };
 
   const filteredColumnValues = columnValues.filter((value) =>
-    value.toLowerCase().includes(searchTerm.toLowerCase())
+    (typeof value === "string" && value !== "N/A" && value.toLowerCase().includes(searchTerm.toLowerCase())) || 
+    (typeof value === "number" && !isNaN(value) && value.toString().includes(searchTerm))
   );
 
   useEffect(() => {
@@ -41,10 +43,10 @@ const FilterPopup = ({ position, onClose, columnValues, onFilterApply }) => {
 
   const handleSortChange = (order) => {
     setSortOrder(order);
-    onFilterApply(selectedValues, order); 
-    onClose();  
+    onFilterApply(selectedValues, order);
+    console.log("Hellllo", selectedValues);
+    onClose();
   };
-
 
   return (
     <div
@@ -60,7 +62,7 @@ const FilterPopup = ({ position, onClose, columnValues, onFilterApply }) => {
     >
       <p
         className={`filter-popup-button ${sortOrder === "asc" ? "active" : ""}`}
-        onClick={() => handleSortChange("asc")} // Зміна: без підтвердження кнопкою "Apply"
+        onClick={() => handleSortChange("asc")}
       >
         Sort A to Z
       </p>
@@ -68,7 +70,7 @@ const FilterPopup = ({ position, onClose, columnValues, onFilterApply }) => {
         className={`filter-popup-button ${
           sortOrder === "desc" ? "active" : ""
         }`}
-        onClick={() => handleSortChange("desc")} // Зміна: без підтвердження кнопкою "Apply"
+        onClick={() => handleSortChange("desc")}
       >
         Sort Z to A
       </p>

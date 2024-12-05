@@ -11,7 +11,7 @@ import filterIcon from "../img/filter-icon.svg";
 import "../styles/ListOfStudents.css";
 
 const API_BASE_URL =
-  "http://127.0.0.1:5001/aylee-learns-english-dev/us-central1/api/api/students?studentId=1";
+  "http://127.0.0.1:5001/aylee-learns-english-dev/us-central1/api/api/students";
 
 const ListOfStudents = () => {
   const [students, setHomeworks] = useState([]);
@@ -26,11 +26,21 @@ const ListOfStudents = () => {
   const [sortOrder, setSortOrder] = useState("");
   const [sortedColumn, setSortedColumn] = useState("");
   const [temporarySortedColumn, setTemporarySortedColumn] = useState("");
-
+  const [filters, setFilters] = useState({
+    first_name: [],
+    general_trend: [],
+    weekly_performance: [],
+    homework_completion: [],
+    strongest_skills: [],
+    weakest_skills: [],
+    weekly_timespent: [],
+  });
   const fetchStudents = async () => {
     try {
       const response = await axios.get(API_BASE_URL);
-      setHomeworks(response.data.students);
+      const allStudents = response.data.students;
+      const firstTwoStudents = allStudents.slice(0, 19); // Вибираємо перші два елементи
+      setHomeworks(firstTwoStudents); // Зберігаємо тільки перші два елементи
       setLoading(false);
     } catch (error) {
       console.error("Error fetching students:", error);
@@ -38,17 +48,7 @@ const ListOfStudents = () => {
       setLoading(false);
     }
   };
-
-  const [filters, setFilters] = useState({
-    first_name: [],
-    general_trend: [],
-    weekly_timespent: [],
-    weekly_performance: [],
-    homework_completion: [],
-    strongest_skills: [],
-    weakest_skills: [],
-    weekly_timespent: [],
-  });
+  
 
   function uniqueColumnValues(data, column) {
     return [...new Set(data.map((item) => item[column]))];
@@ -78,6 +78,8 @@ const ListOfStudents = () => {
     }
   };
 
+
+
   const filteredStudents = students.filter((student) => {
     const searchLower = searchTerm.toLowerCase();
 
@@ -91,6 +93,8 @@ const ListOfStudents = () => {
 
     return matchesName && matchesFilter;
   });
+
+
 
   const sortHomeworks = (students) => {
     if (sortedColumn && sortOrder) {
