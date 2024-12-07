@@ -1,19 +1,15 @@
 import "./App.css";
 
-// import ListOfHomeworks from "./components/ListOfHomeworks";
-// import ListOfActivities from "./components/ListOfActivities";
-// import ListOfStudents from "./components/ListOfStudents";
+
 import AssignHomework from "./components/AssignHomework";
+
+// import ListOfStudents from "./components/ListOfStudents";
 
 function App() {
   return (
     <div className="App">
       <AssignHomework />
-      {/*  
-      <ListOfStudents />
-      <ListOfHomeworks />
-      <ListOfActivities />
-      */}
+   
     </div>
   );
 }
