@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+//import DonutChart from "./Donut";
 import logo from "../img/lists-button-left.svg";
-import lockIcon from "../img/lock-icon.svg";
-
 import "../styles/ReviewHomework.css";
 
 const API_BASE_URL_STUDENTS =
@@ -42,47 +41,8 @@ const ReviewHomework = () => {
     }
   };
 
-  const handleSaveDraft = () => {
-    const draftData = {
-      dueOn,
-      avaibleOn,
-      grade,
-      activeButton,
-      selectedStudents,
-      activities: ["activity09"],
-    };
-
-    localStorage.setItem("homeworkDraft", JSON.stringify(draftData));
-    alert("Draft saved successfully!");
-  };
-
-  const handlePublish = async () => {
-    const body = {
-      dueOn,
-      createdBy: 150,
-      grade,
-      homeworkType:
-        activeButton === "Same For All" ? "Same For All" : "Personalized",
-      activities: ["activity09"],
-    };
-
-    try {
-      console.log(body);
-      const response = await axios.post(API_URL_ASSIGN, body);
-      console.log("Homework assigned successfully:", response.data);
-      alert("Homework assigned successfully!");
-    } catch (error) {
-      console.error("Error assigning homework:", error);
-      alert("Failed to assign homework. Please try again.");
-    }
-  };
-
   const mockExpectedTime = 90;
   const mockAverageCorrectAnswer = 165;
-
-  const uniqueGradeIds = [
-    ...new Set(students.map((student) => student.grade_id)),
-  ];
 
   function capitalizeFirstWord(text) {
     if (!text) return "";
@@ -124,67 +84,36 @@ const ReviewHomework = () => {
     fetchActivities();
   }, []);
 
-  useEffect(() => {
-    const savedDraft = localStorage.getItem("homeworkDraft");
-    if (savedDraft) {
-      const parsedDraft = JSON.parse(savedDraft);
-      console.log("Loaded draft:", parsedDraft);
-
-      setDueOn(parsedDraft.dueOn ? parsedDraft.dueOn.slice(0, 16) : "");
-      setAvaibleOn(
-        parsedDraft.avaibleOn ? parsedDraft.avaibleOn.slice(0, 16) : ""
-      );
-
-      setGrade(parsedDraft.grade || "");
-      setActiveButton(parsedDraft.activeButton || "Same For All");
-      setSelectedStudents(parsedDraft.selectedStudents || []);
-    }
-  }, []);
-
-  useEffect(() => {
-    const savedDraft = localStorage.getItem("homeworkDraft");
-    console.log("Saved draft from storage:", savedDraft);
-    if (savedDraft) {
-      const parsedDraft = JSON.parse(savedDraft);
-      console.log("Parsed draft:", parsedDraft);
-
-      setDueOn(parsedDraft.dueOn || "");
-      setAvaibleOn(parsedDraft.avaibleOn || "");
-    }
-  }, []);
-
   return (
-    <div className="list-of-students">
-      <div className="header">
-        <div className="header-logo">
-          <img src={logo} alt="logo" className="header-logo-img" />
-          <h1 className="header-logo-text">Review homework</h1>
+    <div className="new-list-of-students">
+      <div className="new-header">
+        <div className="new-header-logo">
+          <img src={logo} alt="logo" className="new-header-logo-img" />
+          <h1 className="new-header-logo-text">Review homework</h1>
         </div>
-        <div className="header-login">log in</div>
+        <div className="new-header-login">log in</div>
       </div>
 
-      <div className="content">
-        <div className="container">
-          <div className="content-top">
-<p></p>
-
-
-
-
-
+      <div className="new-content">
+        <div className="new-container">
+          <div className="new-content-top">
+            <div className="chart-container">
+              <p>Overall progress:</p>
+              {/*<DonutChart dataValues={[17, 2, 3]} labels={["Completed", "In Progress", "Not Started"]} />*/}
+              </div>
           </div>
 
-          <div className="content-container-student">
-            <div className="content-container-student-type">
-              <p className="students-title">Students</p>
+          <div className="new-content-container-student">
+            <div className="new-content-container-student-type">
+              <p className="new-students-title">Students</p>
             </div>
-            <table className="students-table">
+            <table className="new-students-table">
               <thead>
                 <tr>
-                  <th id="table-text">Name</th>
-                  <th id="table-text">Progress</th>
-                  <th id="table-text">Succccess Rate</th>
-                  <th id="table-text"> Grade</th>
+                  <th id="new-table-text">Name</th>
+                  <th id="new-table-text">Progress</th>
+                  <th id="new-table-text">Succccess Rate</th>
+                  <th id="new-table-text"> Grade</th>
                 </tr>
               </thead>
               <tbody>
@@ -194,7 +123,7 @@ const ReviewHomework = () => {
                     className={
                       activeButton === "Personalised" &&
                       selectedStudents.includes(student.id)
-                        ? "selected-row"
+                        ? "new-selected-row"
                         : ""
                     }
                     onClick={() =>
@@ -203,7 +132,7 @@ const ReviewHomework = () => {
                     }
                   >
                     <td>
-                      <div className="student-name">
+                      <div className="new-student-name">
                         <img src={student.avatar_url} />
                         {student.first_name} {student.last_name}
                       </div>
@@ -215,13 +144,13 @@ const ReviewHomework = () => {
                         className={
                           mockAverageCorrectAnswer >= 71 &&
                           mockAverageCorrectAnswer <= Infinity
-                            ? "rate-completion-low-min"
+                            ? "new-rate-completion-low-min"
                             : mockAverageCorrectAnswer >= 46 &&
                               mockAverageCorrectAnswer <= 70
-                            ? "rate-completion-middle"
+                            ? "new-rate-completion-middle"
                             : mockAverageCorrectAnswer >= 1 &&
                               mockAverageCorrectAnswer <= 45
-                            ? "rate-completion-high"
+                            ? "new-rate-completion-high"
                             : "n-a"
                         }
                       >
@@ -234,11 +163,11 @@ const ReviewHomework = () => {
                       <button
                         className={
                           mockExpectedTime >= 0 && mockExpectedTime <= 30
-                            ? "rate-completion-low"
+                            ? "new-rate-completion-low"
                             : mockExpectedTime >= 31 && mockExpectedTime <= 80
-                            ? "rate-completion-middle"
+                            ? "new-rate-completion-middle"
                             : mockExpectedTime >= 81 && mockExpectedTime <= 100
-                            ? "rate-completion-high"
+                            ? "new-rate-completion-high"
                             : ""
                         }
                       >
@@ -246,7 +175,7 @@ const ReviewHomework = () => {
                       </button>
                     </td>
 
-                    <td className="main-text weakest-skills-lock-container">
+                    <td className="new-main-text new-weakest-skills-lock-container">
                       {Array.isArray(student?.weakest_skills) &&
                       student.weakest_skills.length > 0
                         ? capitalizeFirstWord(student.weakest_skills.join(", "))
@@ -258,9 +187,9 @@ const ReviewHomework = () => {
             </table>
           </div>
 
-          <div className="content-container-activity">
-            <div className="content-container-activity-recommended">
-              <p className="students-title">
+          <div className="new-content-container-activity">
+            <div className="new-content-container-activity-recommended">
+              <p className="new-students-title">
                 {activeButton === "Same For All"
                   ? "Results For"
                   : selectedStudents.length === 1
@@ -272,58 +201,63 @@ const ReviewHomework = () => {
                   : "Recommended Activities"}
               </p>
 
-              <div className="give-grade-container">
-                <div className="class-dropdown-container">
-                  <form className="class-label" s action="#">
-                    <label className="students-title" htmlFor="lang-class">
+              <div className="new-give-grade-container">
+                <div className="new-class-dropdown-container">
+                  <form className="new-class-label" s action="#">
+                    <label className="new-students-title" htmlFor="lang-class">
                       Grade:
                     </label>
                     <select
                       name="languages"
-                      id="lang-class"
+                      id="new-lang-class"
                       value={grade}
                       onChange={(e) => setGrade(e.target.value)}
                     >
-                      <option value="">A+</option>
-                      <option value="">A</option>
-                      <option value="">A-</option>
-                      <option value="">B+</option>
-                      <option value="">B</option>
-                      <option value="">B-</option>
-                      <option value="">C+</option>
-                      <option value="">C</option>
-                      <option value="">C-</option>
-                      <option value="">D+</option>
-                      <option value="">D</option>
-                      <option value="">F</option>
-                       
+                      <option value="A+">A+</option>
+                      <option value="A">A</option>
+                      <option value="A-">A-</option>
+                      <option value="B+">B+</option>
+                      <option value="B">B</option>
+                      <option value="B-">B-</option>
+                      <option value="C+">C+</option>
+                      <option value="C">C</option>
+                      <option value="C-">C-</option>
+                      <option value="D+">D+</option>
+                      <option value="D">D</option>
+                      <option value="F">F</option>
                     </select>
                   </form>
                 </div>
-                <button className="personalised-button">ADD FEEDBACK</button>
+                <button className="new-personalised-button">
+                  ADD FEEDBACK
+                </button>
               </div>
             </div>
             <div>
-              <table className="students-table">
+              <table className="new-students-table">
                 <thead>
                   <tr>
-                    <th id="table-text">Activity</th>
-                    <th id="table-text">Task ID</th>
-                    <th id="table-text">Answer Correctness</th>
-                    <th id="table-text">Answer speed</th>
+                    <th id="new-table-text">Activity</th>
+                    <th id="new-table-text">Task ID</th>
+                    <th id="new-table-text">Answer Correctness</th>
+                    <th id="new-table-text">Answer speed</th>
                   </tr>
                 </thead>
                 <tbody>
                   {activities.map((activity) => (
                     <tr key={activity.id}>
-                      <td className="main-text">{activity.languageElements}</td>
+                      <td className="new-main-text">
+                        {activity.languageElements}
+                      </td>
 
-                      <td className="main-text">11</td>
-                      <td className="main-text">
+                      <td className="new-main-text">11</td>
+                      <td className="new-main-text">
                         {activity.primarySkills.join(", ")}
                       </td>
 
-                      <td className="main-text">{activity.requiredTime} Min</td>
+                      <td className="new-main-text">
+                        {activity.requiredTime} Min
+                      </td>
                     </tr>
                   ))}
                 </tbody>
