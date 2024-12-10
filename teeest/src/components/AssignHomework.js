@@ -12,34 +12,73 @@ const API_BASE_URL_STUDENTS =
 const API_BASE_URL_ACTIVITIES =
   "http://127.0.0.1:5001/aylee-learns-english-dev/us-central1/api/api/activity?activityId=all";
 
+const API_URL_ASSIGN =
+  "http://127.0.0.1:5001/aylee-learns-english-dev/us-central1/api/api/homework/assign";
+
 const AssignHomework = () => {
   const [students, setStudents] = useState([]);
   const [activities, setActivities] = useState([]);
-  const [selectedGrade, setSelectedGrade] = useState("");
+  const [assignedTo, setAssignedTo] = useState("");
+  const [activeButton, setActiveButton] = useState("Same For All");
+  const [dueOn, setDueOn] = useState("");
+  const [avaibleOn, setAvaibleOn] = useState("");
+  const [selectedStudents, setSelectedStudents] = useState([]);
 
-  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-  const [uniqueStatuses, setUniqueStatuses] = useState([]);
-  const [popupVisible, setPopupVisible] = useState(false);
-  const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
-  const [sortOrder, setSortOrder] = useState("");
-  const [sortedColumn, setSortedColumn] = useState("");
-  const [temporarySortedColumn, setTemporarySortedColumn] = useState("");
 
-  const [filters, setFilters] = useState({
-    status: [],
-    type: [],
-  });
+  const handleButtonClick = (buttonType) => {
+    setActiveButton(buttonType);
+    if (buttonType !== "Personalised") {
+      setSelectedStudents([]);
+    }
+  };
+
+  const toggleStudentSelection = (studentId) => {
+    if (selectedStudents.includes(studentId)) {
+      setSelectedStudents([]);
+    } else {
+      setSelectedStudents([studentId]);
+    }
+  };
+
+  const handleSaveDraft = () => {
+    const draftData = {
+      dueOn,
+      avaibleOn,
+      assignedTo,
+      activeButton,
+      selectedStudents,
+      activities: ["activity09"],
+    };
+
+    localStorage.setItem("homeworkDraft", JSON.stringify(draftData));
+    alert("Draft saved successfully!");
+  };
+
+  const handlePublish = async () => {
+    const body = {
+      dueOn,
+      createdBy: 150,
+      assignedTo,
+      homeworkType:
+        activeButton === "Same For All" ? "Same For All" : "Personalized",
+      activities: ["activity09"],
+    };
+
+    try {
+      console.log(body);
+      const response = await axios.post(API_URL_ASSIGN, body);
+      console.log("Homework assigned successfully:", response.data);
+      alert("Homework assigned successfully!");
+    } catch (error) {
+      console.error("Error assigning homework:", error);
+      alert("Failed to assign homework. Please try again.");
+    }
+  };
 
   const mockExpectedTime = 90;
   const mockAverageCorrectAnswer = 165;
-
-  function uniqueColumnValues(data, column) {
-    return [...new Set(data.map((item) => item[column]))];
-  }
 
   const uniqueGradeIds = [
     ...new Set(students.map((student) => student.grade_id)),
@@ -48,31 +87,16 @@ const AssignHomework = () => {
   function capitalizeFirstWord(text) {
     if (!text) return "";
     const words = text.split(" ");
-    words[0] = words[0].charAt(0).toUpperCase() + words[0].slice(1);
-
-    return words.join(" ");
-  }
-
-  const handleFilterClick = (e, columnName) => {
-    const rect = e.target.getBoundingClientRect();
-    setPopupPosition({
-      top: rect.bottom + window.scrollY,
-      left: rect.left + window.scrollX,
-    });
-    setPopupVisible(true);
-    setTemporarySortedColumn(columnName);
-    if (columnName === "status" || columnName === "type") {
-      setUniqueStatuses(uniqueColumnValues(students, columnName));
-    } else {
-      setUniqueStatuses([]);
+    for (let i = 0; i < words.length; i++) {
+      words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
     }
-  };
+    return words;
+  }
 
   const fetchStudents = async () => {
     try {
       const response = await axios.get(API_BASE_URL_STUDENTS);
       const allStudents = response.data.students;
-      console.log(allStudents);
       const firstTwoStudents = allStudents.slice(0, 19);
       setStudents(firstTwoStudents);
       setLoading(false);
@@ -95,122 +119,40 @@ const AssignHomework = () => {
     }
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    });
-  };
-
-  const filteredStudents = students.filter((student) => {
-    if (selectedGrade === "") return true; // Якщо grade не вибрано, показуємо всіх
-    return student.grade_id === selectedGrade;
-  });
-
-  const handleGradeChange = (e) => {
-    setSelectedGrade(e.target.value); // Оновлюємо selectedGrade
-  };
-
-  //     const searchLower = searchTerm.toLowerCase();
-
-  //     const matchesPrimarySkills = activ.primarySkills.some((skill) =>
-  //       skill.toLowerCase().includes(searchLower)
-  //     );
-
-  //     const matchesFilters = (columnName, selectedValues) => {
-  //       if (selectedValues.length > 0) {
-  //         return selectedValues.some((filterValue) => {
-  //           const columnValue = activ[columnName];
-
-  //           if (typeof columnValue === "number") {
-  //             return columnValue === filterValue;
-  //           }
-
-  //           if (typeof columnValue === "string") {
-  //             return columnValue
-  //               .toLowerCase()
-  //               .includes(filterValue.toLowerCase());
-  //           }
-  //           return false;
-  //         });
-  //       }
-  //       return true;
-  //     };
-
-  //     const matchesLanguageElements = matchesFilters(
-  //       "languageElements",
-  //       filters.languageElements
-  //     );
-  //     const matchesPrimarySkillsFilter = matchesFilters(
-  //       "primarySkills",
-  //       filters.primarySkills
-  //     );
-  //     const matchesRequiredTime = matchesFilters(
-  //       "requiredTime",
-  //       filters.requiredTime
-  //     );
-
-  //     return (
-  //       matchesPrimarySkills &&
-  //       matchesLanguageElements &&
-  //       matchesPrimarySkillsFilter &&
-  //       matchesRequiredTime
-  //     );
-  //   });
-
-  const sortHomeworks = (students) => {
-    if (sortedColumn && sortOrder) {
-      return [...students].sort((a, b) => {
-        let valueA = a[sortedColumn];
-        let valueB = b[sortedColumn];
-
-        if (
-          valueA instanceof Date ||
-          valueB instanceof Date ||
-          !isNaN(Date.parse(valueA)) ||
-          !isNaN(Date.parse(valueB))
-        ) {
-          valueA = new Date(valueA);
-          valueB = new Date(valueB);
-        }
-
-        if (!isNaN(valueA) && !isNaN(valueB)) {
-          valueA = Number(valueA);
-          valueB = Number(valueB);
-        }
-
-        if (typeof valueA === "string" && typeof valueB === "string") {
-          valueA = valueA.toLowerCase();
-          valueB = valueB.toLowerCase();
-        }
-        if (valueA < valueB) return sortOrder === "asc" ? -1 : 1;
-        if (valueA > valueB) return sortOrder === "asc" ? 1 : -1;
-        return 0;
-      });
-    }
-    return students;
-  };
-
-  const sortedHomeworks = sortHomeworks(filteredStudents);
-
   useEffect(() => {
     fetchStudents();
     fetchActivities();
   }, []);
 
-  const handleFilterApply = (selectedValues, selectedSortOrder) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [temporarySortedColumn]: selectedValues,
-    }));
-    setSortedColumn(temporarySortedColumn);
-    setSortOrder(selectedSortOrder);
-  };
+  useEffect(() => {
+    const savedDraft = localStorage.getItem("homeworkDraft");
+    if (savedDraft) {
+      const parsedDraft = JSON.parse(savedDraft);
+      console.log("Loaded draft:", parsedDraft);
+
+      setDueOn(parsedDraft.dueOn ? parsedDraft.dueOn.slice(0, 16) : "");
+      setAvaibleOn(
+        parsedDraft.avaibleOn ? parsedDraft.avaibleOn.slice(0, 16) : ""
+      );
+
+      setAssignedTo(parsedDraft.assignedTo || "");
+      setActiveButton(parsedDraft.activeButton || "Same For All");
+      setSelectedStudents(parsedDraft.selectedStudents || []);
+    }
+  }, []);
+
+  useEffect(() => {
+    const savedDraft = localStorage.getItem("homeworkDraft");
+    console.log("Saved draft from storage:", savedDraft);
+    if (savedDraft) {
+      const parsedDraft = JSON.parse(savedDraft);
+      console.log("Parsed draft:", parsedDraft);
+  
+      setDueOn(parsedDraft.dueOn || "");
+      setAvaibleOn(parsedDraft.avaibleOn || "");
+    }
+  }, []);
+  
 
   return (
     <div className="list-of-students">
@@ -227,16 +169,16 @@ const AssignHomework = () => {
           <div className="content-top">
             <div className="class-dropdown-container">
               <form className="class-label" s action="#">
-                <label className="class-label-title" for="lang">
+                <label className="class-label-title" htmlFor="lang-class">
                   Class:
                 </label>
                 <select
                   name="languages"
                   id="lang-class"
-                  value={selectedGrade}
-                  onChange={handleGradeChange}
+                  value={assignedTo}
+                  onChange={(e) => setAssignedTo(e.target.value)}
                 >
-                  <option value="">All</option> {/* Для вибору всіх класів */}
+                  <option value="">Select a class</option>
                   {uniqueGradeIds.map((gradeId) => (
                     <option key={gradeId} value={gradeId}>
                       {gradeId}
@@ -251,143 +193,206 @@ const AssignHomework = () => {
                 <label className="class-label-title" for="lang">
                   Available on:
                 </label>
-                <input type="datetime-local" id="lang-available" />
+                <input
+                  type="datetime-local"
+                  id="lang-available"
+                  onChange={(e) => setAvaibleOn(e.target.value)}
+                />
               </form>
             </div>
 
             <div className="class-dropdown-container">
-              <form className="class-label" s action="#">
-                <label className="class-label-title" for="lang">
+              <form className="class-label">
+                <label className="class-label-title" htmlFor="lang-available">
                   Due on:
                 </label>
-                <input type="datetime-local" id="lang-available" />
+                <input
+                  type="datetime-local"
+                  id="lang-available"
+                  onChange={(e) => setDueOn(e.target.value)}
+                />
               </form>
             </div>
             <div className="buttons-container">
-              <button className="save-draft-button">SAVE DRAFT</button>
-              <button className="publish-button">PUBLISH</button>
+              <button className="save-draft-button" onClick={handleSaveDraft}>
+                SAVE DRAFT
+              </button>
+
+              <button className="publish-button" onClick={handlePublish}>
+                PUBLISH
+              </button>
             </div>
           </div>
 
-          <div className="content-container">
-            <div className="content-container-student">
-              <div className="content-container-student-type">
-                <p className="class-label-title">Homework Type:</p>
-                <div className="content-container-student-type-button">
-                  <button className="same-for-all-button">Same for all</button>
-                  <button className="personalised-button">Personalised</button>
+          {loading ? (
+            <p>Loading...</p>
+          ) : error ? (
+            <p className="error">{error}</p>
+          ) : (
+            <div className="content-container">
+              <div className="content-container-student">
+                <div className="content-container-student-type">
+                  <p className="class-label-title">Homework Type:</p>
+                  <div className="content-container-student-type-button">
+                    <button
+                      className={`same-for-all-button ${
+                        activeButton === "Same For All" ? "active" : ""
+                      }`}
+                      onClick={() => handleButtonClick("Same For All")}
+                    >
+                      Same for all
+                    </button>
+
+                    <button
+                      className={`personalised-button ${
+                        activeButton === "Personalised" ? "active" : ""
+                      }`}
+                      onClick={() => handleButtonClick("Personalised")}
+                    >
+                      Personalised
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <table className="students-table">
-                <thead>
-                  <tr>
-                    <th id="table-text">Student</th>
-                    <th id="table-text">Expected Time To Complete</th>
-                    <th id="table-text">
-                      Average Correct <br /> Answer Probability
-                    </th>
-                    <th id="table-text"> Weakest skills</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredStudents.map((student) => (
-                    <tr key={student.id}>
-                      <td>
-                        <div className="student-name">
-                          <img src={student.avatar_url} />
-                          {student.first_name} {student.last_name}
-                        </div>
-                      </td>
-
-                      <td>
-                        {" "}
-                        <button
-                          className={
-                            mockAverageCorrectAnswer >= 71 &&
-                            mockAverageCorrectAnswer <= Infinity
-                              ? "rate-completion-low-min"
-                              : mockAverageCorrectAnswer >= 46 &&
-                                mockAverageCorrectAnswer <= 70
-                              ? "rate-completion-middle"
-                              : mockAverageCorrectAnswer >= 1 &&
-                                mockAverageCorrectAnswer <= 45
-                              ? "rate-completion-high"
-                              : "n-a"
-                          }
-                        >
-                          {mockAverageCorrectAnswer} min
-                        </button>
-                      </td>
-
-                      <td>
-                        {" "}
-                        <button
-                          className={
-                            mockExpectedTime >= 0 && mockExpectedTime <= 30
-                              ? "rate-completion-low"
-                              : mockExpectedTime >= 31 && mockExpectedTime <= 80
-                              ? "rate-completion-middle"
-                              : mockExpectedTime >= 81 &&
-                                mockExpectedTime <= 100
-                              ? "rate-completion-high"
-                              : ""
-                          }
-                        >
-                          {mockExpectedTime}%
-                        </button>
-                      </td>
-
-                      <td className="main-text weakest-skills-lock-container">
-                        {capitalizeFirstWord(student.weakest_skills.join(", "))}
-                        <img
-                          src={lockIcon}
-                          className={"lock-icon"}
-                          alt="lockIcon"
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="content-container-activity">
-              <div className="content-container-activity-recommended">
-                <p className="class-label-title">
-                  Recommended Activities For All Students
-                </p>{" "}
-                <button className="personalised-button">EDIT</button>
-              </div>
-              <div>
                 <table className="students-table">
                   <thead>
                     <tr>
-                      <th id="table-text">Activity</th>
-                      <th id="table-text">Primary Skills</th>
-                      <th id="table-text">Time required</th>
+                      <th id="table-text">Student</th>
+                      <th id="table-text">Expected Time To Complete</th>
+                      <th id="table-text">
+                        Average Correct <br /> Answer Probability
+                      </th>
+                      <th id="table-text"> Weakest skills</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {activities.map((activity) => (
-                      <tr key={activity.id}>
-                        <td className="main-text">
-                          {activity.languageElements}
+                    {students.map((student) => (
+                      <tr
+                        key={student.id}
+                        className={
+                          activeButton === "Personalised" &&
+                          selectedStudents.includes(student.id)
+                            ? "selected-row"
+                            : ""
+                        }
+                        onClick={() =>
+                          activeButton === "Personalised" &&
+                          toggleStudentSelection(student.id)
+                        }
+                      >
+                        <td>
+                          <div className="student-name">
+                            <img src={student.avatar_url} />
+                            {student.first_name} {student.last_name}
+                          </div>
                         </td>
 
-                        <td className="main-text">
-                          {activity.primarySkills.join(", ")}
+                        <td>
+                          {" "}
+                          <button
+                            className={
+                              mockAverageCorrectAnswer >= 71 &&
+                              mockAverageCorrectAnswer <= Infinity
+                                ? "rate-completion-low-min"
+                                : mockAverageCorrectAnswer >= 46 &&
+                                  mockAverageCorrectAnswer <= 70
+                                ? "rate-completion-middle"
+                                : mockAverageCorrectAnswer >= 1 &&
+                                  mockAverageCorrectAnswer <= 45
+                                ? "rate-completion-high"
+                                : "n-a"
+                            }
+                          >
+                            {mockAverageCorrectAnswer} min
+                          </button>
                         </td>
 
-                        <td className="main-text">
-                          {activity.requiredTime} Min
+                        <td>
+                          {" "}
+                          <button
+                            className={
+                              mockExpectedTime >= 0 && mockExpectedTime <= 30
+                                ? "rate-completion-low"
+                                : mockExpectedTime >= 31 &&
+                                  mockExpectedTime <= 80
+                                ? "rate-completion-middle"
+                                : mockExpectedTime >= 81 &&
+                                  mockExpectedTime <= 100
+                                ? "rate-completion-high"
+                                : ""
+                            }
+                          >
+                            {mockExpectedTime}%
+                          </button>
+                        </td>
+
+                        <td className="main-text weakest-skills-lock-container">
+                          {Array.isArray(student?.weakest_skills) &&
+                          student.weakest_skills.length > 0
+                            ? capitalizeFirstWord(
+                                student.weakest_skills.join(", ")
+                              )
+                            : "N/A"}
+
+                          {activeButton === "Same For All" ? (
+                            <img
+                              src={lockIcon}
+                              className={"lock-icon"}
+                              alt="lockIcon"
+                            />
+                          ) : null}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
+
+              <div className="content-container-activity">
+                <div className="content-container-activity-recommended">
+                  <p className="class-label-title">
+                    {activeButton === "Same For All"
+                      ? "Recommended Activities For All Students"
+                      : selectedStudents.length === 1
+                      ? `Recommended Activities For ${
+                          students.find(
+                            (student) => student.id === selectedStudents[0]
+                          )?.first_name || "Selected Student"
+                        }`
+                      : "Recommended Activities"}
+                  </p>
+                  <button className="personalised-button">EDIT</button>
+                </div>
+                <div>
+                  <table className="students-table">
+                    <thead>
+                      <tr>
+                        <th id="table-text">Activity</th>
+                        <th id="table-text">Primary Skills</th>
+                        <th id="table-text">Time required</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {activities.map((activity) => (
+                        <tr key={activity.id}>
+                          <td className="main-text">
+                            {activity.languageElements}
+                          </td>
+
+                          <td className="main-text">
+                            {activity.primarySkills.join(", ")}
+                          </td>
+
+                          <td className="main-text">
+                            {activity.requiredTime} Min
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
