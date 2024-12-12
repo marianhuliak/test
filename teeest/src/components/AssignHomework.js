@@ -13,7 +13,7 @@ const API_BASE_URL_ACTIVITIES =
   "http://127.0.0.1:5001/aylee-learns-english-dev/us-central1/api/api/activity?activityId=all";
 
 const API_URL_ASSIGN =
-  "http://127.0.0.1:5001/aylee-learns-english-dev/us-central1/api/api/homework/assign";
+  "http://127.0.0.1:5001/aylee-learns-english-dev/us-central1/api/api/homework/feedback/:1";
 
 const AssignHomework = () => {
   const [students, setStudents] = useState([]);
@@ -67,9 +67,7 @@ const AssignHomework = () => {
     };
 
     try {
-      console.log(body);
       const response = await axios.post(API_URL_ASSIGN, body);
-      console.log("Homework assigned successfully:", response.data);
       alert("Homework assigned successfully!");
     } catch (error) {
       console.error("Error assigning homework:", error);
@@ -128,7 +126,6 @@ const AssignHomework = () => {
     const savedDraft = localStorage.getItem("homeworkDraft");
     if (savedDraft) {
       const parsedDraft = JSON.parse(savedDraft);
-      console.log("Loaded draft:", parsedDraft);
 
       setDueOn(parsedDraft.dueOn ? parsedDraft.dueOn.slice(0, 16) : "");
       setAvaibleOn(
@@ -143,10 +140,8 @@ const AssignHomework = () => {
 
   useEffect(() => {
     const savedDraft = localStorage.getItem("homeworkDraft");
-    console.log("Saved draft from storage:", savedDraft);
     if (savedDraft) {
       const parsedDraft = JSON.parse(savedDraft);
-      console.log("Parsed draft:", parsedDraft);
   
       setDueOn(parsedDraft.dueOn || "");
       setAvaibleOn(parsedDraft.avaibleOn || "");

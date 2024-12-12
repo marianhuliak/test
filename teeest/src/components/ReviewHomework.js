@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-//import DonutChart from "./Donut";
+import DonutChart from "./DonutChart.js";
 import logo from "../img/lists-button-left.svg";
 import "../styles/ReviewHomework.css";
 
@@ -12,33 +12,23 @@ const API_BASE_URL_ACTIVITIES =
   "http://127.0.0.1:5001/aylee-learns-english-dev/us-central1/api/api/activity?activityId=all";
 
 const API_URL_ASSIGN =
-  "http://127.0.0.1:5001/aylee-learns-english-dev/us-central1/api/api/homework/assign";
-
+  "http://127.0.0.1:5001/aylee-learns-english-dev/us-central1/api/api/homework/feedback";
 const ReviewHomework = () => {
   const [students, setStudents] = useState([]);
   const [activities, setActivities] = useState([]);
   const [grade, setGrade] = useState("");
-  const [activeButton, setActiveButton] = useState("Personalized");
-  const [dueOn, setDueOn] = useState("");
-  const [avaibleOn, setAvaibleOn] = useState("");
   const [selectedStudents, setSelectedStudents] = useState([]);
-
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [feedbackText, setFeedbackText] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const handleButtonClick = (buttonType) => {
-    setActiveButton(buttonType);
-    if (buttonType !== "Personalised") {
-      setSelectedStudents([]);
-    }
-  };
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
 
   const toggleStudentSelection = (studentId) => {
-    if (selectedStudents.includes(studentId)) {
-      setSelectedStudents([]);
-    } else {
-      setSelectedStudents([studentId]);
-    }
+    setSelectedStudent((prev) => (prev === studentId ? null : studentId));
   };
 
   const mockExpectedTime = 90;
@@ -52,6 +42,23 @@ const ReviewHomework = () => {
     }
     return words;
   }
+
+  const handleSendFeedback = async () => {
+    try {
+      const response = await axios.post(`${API_URL_ASSIGN}/1`, {
+        teacherId: "teacher-1",
+        studentId: selectedStudent,
+        feedback: feedbackText,
+      });
+
+      console.log(" selectedStudent:", selectedStudent);
+      console.log("Feedback sent successfully:", response.data);
+      setFeedbackText("");
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error sending feedback:", error);
+    }
+  };
 
   const fetchStudents = async () => {
     try {
@@ -98,9 +105,39 @@ const ReviewHomework = () => {
         <div className="new-container">
           <div className="new-content-top">
             <div className="chart-container">
-              <p>Overall progress:</p>
-              {/*<DonutChart dataValues={[17, 2, 3]} labels={["Completed", "In Progress", "Not Started"]} />*/}
+              <p className="overall-progress">Overall progress:</p>
+
+              <DonutChart
+                dataValues={[17, 2, 3]}
+                labels={["Completed", "In Progress", "Not Started"]}
+              />
+              <div className="content-top-data">
+                <div className="content-top-data-container">
+                  <p className="content-top-data-key">Class: </p>{" "}
+                  <p className="content-top-data-value">Year 3B</p>
+                </div>
+                <div className="content-top-data-container">
+                  <p className="content-top-data-key">Available on:</p>{" "}
+                  <p className="content-top-data-value">May 5, 2024 12:00 AM</p>
+                </div>
+                <div className="content-top-data-container">
+                  <p className="content-top-data-key">Due on:</p>{" "}
+                  <p className="content-top-data-value">
+                    May 12, 2024 12:00 AM
+                  </p>
+                </div>
+                <div className="content-top-data-container">
+                  <p className="content-top-data-key">Homework Type:</p>{" "}
+                  <p className="content-top-data-value">Same for all</p>
+                </div>
+                <div className="content-top-data-container">
+                  <p className="content-top-data-key">Activities:</p>{" "}
+                  <p className="content-top-data-value">
+                    Pronouns - intermediate <br /> This is / Is not
+                  </p>
+                </div>
               </div>
+            </div>
           </div>
 
           <div className="new-content-container-student">
@@ -121,15 +158,9 @@ const ReviewHomework = () => {
                   <tr
                     key={student.id}
                     className={
-                      activeButton === "Personalised" &&
-                      selectedStudents.includes(student.id)
-                        ? "new-selected-row"
-                        : ""
+                      selectedStudent === student.id ? "new-selected-row" : "" // Перевірка для одного студента
                     }
-                    onClick={() =>
-                      activeButton === "Personalised" &&
-                      toggleStudentSelection(student.id)
-                    }
+                    onClick={() => toggleStudentSelection(student.id)}
                   >
                     <td>
                       <div className="new-student-name">
@@ -190,13 +221,10 @@ const ReviewHomework = () => {
           <div className="new-content-container-activity">
             <div className="new-content-container-activity-recommended">
               <p className="new-students-title">
-                {activeButton === "Same For All"
-                  ? "Results For"
-                  : selectedStudents.length === 1
+                {selectedStudent
                   ? `Results For ${
-                      students.find(
-                        (student) => student.id === selectedStudents[0]
-                      )?.first_name || "Selected Student"
+                      students.find((student) => student.id === selectedStudent)
+                        ?.first_name || "Selected Student"
                     }`
                   : "Recommended Activities"}
               </p>
@@ -228,9 +256,42 @@ const ReviewHomework = () => {
                     </select>
                   </form>
                 </div>
-                <button className="new-personalised-button">
+                <button
+                  className="new-personalised-button"
+                  onClick={handleOpenModal}
+                >
                   ADD FEEDBACK
                 </button>
+
+                {isModalOpen && (
+                  <div className="modal-overlay">
+                    <div className="modal-content">
+                      <h2>Provide Feedback</h2>
+                      <textarea
+                        value={feedbackText}
+                        onChange={(e) => setFeedbackText(e.target.value)}
+                        placeholder="Enter your feedback here..."
+                        rows="4"
+                        cols="50"
+                        className="textarea-feedback"
+                      />
+                      <div className="modal-actions">
+                        <button
+                          onClick={handleSendFeedback}
+                          className="send-button"
+                        >
+                          Send
+                        </button>
+                        <button
+                          onClick={handleCloseModal}
+                          className="close-button"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
             <div>
