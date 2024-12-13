@@ -6,18 +6,18 @@ import "./App.css";
 // import ListOfHomeworks from "./components/ListOfHomeworks";
 // import ReviewHomework from "./components/ReviewHomework";
 import GroupPlay from "./components/GroupPlay";
+//import AddStudents from "./components/AddStudents";
 
 function App() {
   return (
     <div className="App">
       <GroupPlay />
-      {/* <ReviewHomework />
+      {/* <ListOfStudents />
+      <AddStudents />
+      <ReviewHomework />
       <AssignHomework />
       <ListOfHomeworks />
-      <ListOfStudents />
-      <ListOfActivities />
-       */}
-      
+      <ListOfActivities /> */}
     </div>
   );
 }
